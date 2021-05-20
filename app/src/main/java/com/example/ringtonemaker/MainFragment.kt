@@ -20,7 +20,8 @@ import java.io.File
 class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBinding::inflate),
     FFMpegCallback {
 
-    private var filePath: String? = ""
+    private var initialFilePath: String? = ""
+    private var initialFileUri: Uri? = null
     private var ringtoneFolderPathName: String? = ""
     private var ringtoneFolderUri: Uri? = null
     private lateinit var ringtone: File
@@ -28,8 +29,9 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
     private val getContent: ActivityResultLauncher<String> = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { audioUri ->
-        filePath = audioUri.path
-        val name = filePath?.substringAfterLast('/')?.substringAfterLast('/')
+        initialFileUri = audioUri
+        initialFilePath = audioUri.path
+        val name = initialFilePath?.substringAfterLast('/')?.substringAfterLast('/')
         binding.textViewMainFragmentFileName.text = name
     }
 
@@ -78,7 +80,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
     }
 
     private fun setUpResources() {
-        ringtone = Utils.copyFileToExternalStorage(ringtoneFolderUri, requireContext())
+        ringtone = Utils.copyFileToExternalStorage(initialFileUri, ringtoneFolderUri?.path!!, requireContext())
     }
 
     override fun onProgress(progress: String) {
