@@ -1,27 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Выбранный файл:"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/textView_mainFragment_fileName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
         android:id="@+id/textView_mainFragment_fileName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="file name"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/button_mainFragment_chooseFile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/textView_title" />
 
     <Button
         android:id="@+id/button_mainFragment_chooseFile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="choose file"
+        app:layout_constraintBottom_toTopOf="@id/textView_title_chooseFolder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView_mainFragment_fileName" />
+
+    <TextView
+        android:id="@+id/textView_title_chooseFolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Папка для рингтона:"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/textView_mainFragment_choosedFolder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_mainFragment_chooseTheFolder"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/textView_mainFragment_choosedFolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="file name"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/button_mainFragment_chooseTheFolder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView_title_chooseFolder" />
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        app:layout_constraintTop_toBottomOf="@id/button_mainFragment_chooseTheFolder"
+        app:layout_constraintBottom_toTopOf="@id/button_mainFragment_createRingtone"
+        android:id="@+id/linearLayout_mainFragment_chooseFile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginEnd="16dp"
+            android:id="@+id/textInputLayout_mainFragment_startTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/button_mainFragment_createRingtone"
+            app:layout_constraintTop_toBottomOf="@+id/button_mainFragment_chooseFile"
+            android:layout_marginRight="16dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:hint="начальное время"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_mainFragment_endTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/button_mainFragment_chooseTheFolder"
+            app:layout_constraintTop_toBottomOf="@+id/button_mainFragment_chooseFile">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:hint="начальное время"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/button_mainFragment_chooseTheFolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="выбрать папку для сохранения рингтона"
+        app:layout_constraintBottom_toTopOf="@id/button_mainFragment_createRingtone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView_mainFragment_choosedFolder" />
+
+
+    <Button
+        android:id="@+id/button_mainFragment_createRingtone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="сделать рингтон"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/linearLayout_mainFragment_chooseFile" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

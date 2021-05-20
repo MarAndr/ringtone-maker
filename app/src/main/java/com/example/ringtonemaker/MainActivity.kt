@@ -1,20 +1,28 @@
 package com.example.ringtonemaker
 
+import android.Manifest
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.example.mylab.const.Constants
+import com.example.ringtonemaker.databinding.ActivityMainBinding
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
     }
 
-//    AudioTrimmer.with(context!!)
-//    .setFile(audio2) //Audio File
-//    .setStartTime("00:00:05") //Start at 5 seconds
-//    .setEndTime("00:00:10") //End at 10 seconds
-//    .setOutputPath("PATH_TO_OUTPUT_AUDIO")
-//    .setOutputFileName("trimmed_" + System.currentTimeMillis() + ".mp3")
-//    .setCallback(this@MainActivity)
-//    .trim()
+
+
+
 }
