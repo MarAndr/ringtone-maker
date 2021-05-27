@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Выберите музыкальный файл и папку для сохранения рингтона:"
+        android:text="Введите необходимую информацию для создания рингтона:"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout_mainFragment_chooseFile"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -48,18 +48,14 @@
         android:id="@+id/linearLayout_mainFragment_chooseFolder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/textView_mainFragment_chooseTimeLabel"
+        app:layout_constraintBottom_toTopOf="@id/linearLayout_mainFragment_setRingtoneName"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout_mainFragment_chooseFile">
 
         <Button
             android:id="@+id/button_mainFragment_chooseTheFolder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="выбрать папку"
-            app:layout_constraintBottom_toTopOf="@id/textView_mainFragment_chooseTimeLabel"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView_mainFragment_choosedFolder" />
+            android:text="выбрать папку" />
 
         <TextView
             android:layout_gravity="center_vertical"
@@ -69,6 +65,30 @@
             style="@style/DirectoryLabelTextStyle"
             android:text="папка не выбрана" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout_mainFragment_setRingtoneName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/textView_mainFragment_chooseTimeLabel"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout_mainFragment_chooseFolder"
+        android:orientation="horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_mainFragment_setRingtoneName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_mainFragment_setRingtoneName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="введите название рингтона" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    </LinearLayout>
+
+
 
 
     <TextView
@@ -80,7 +100,7 @@
         app:layout_constraintBottom_toTopOf="@id/linearLayout_mainFragment_chooseTimeInterval"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearLayout_mainFragment_chooseFolder" />
+        app:layout_constraintTop_toBottomOf="@id/linearLayout_mainFragment_setRingtoneName" />
 
     <LinearLayout
         android:id="@+id/linearLayout_mainFragment_chooseTimeInterval"

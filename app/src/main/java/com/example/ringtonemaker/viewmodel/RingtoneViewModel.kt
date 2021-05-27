@@ -1,6 +1,6 @@
 package com.example.ringtonemaker.viewmodel
 
-import androidx.lifecycle.LiveData
+
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,20 +15,27 @@ class RingtoneViewModel: ViewModel() {
     val ringtoneCuttingState: StateFlow<CuttingState> = _ringtoneCuttingState
     private val repository = Repository()
     private val _fileChoosingState = MutableLiveData(false)
-    val fileChoosingState: LiveData<Boolean> = _fileChoosingState
     private val _ringtoneFolderChoosingState = MutableLiveData(false)
-    val ringtoneFolderChoosingState: LiveData<Boolean> = _ringtoneFolderChoosingState
+    private val _ringtoneNameChoosingState = MutableLiveData(false)
+
+
+    fun changeRingtoneNameChoosingState(ringtoneNameChoosingState: Boolean){
+        _ringtoneNameChoosingState.value = ringtoneNameChoosingState
+        if (isRingtoneReadyToMake()){
+            _ringtoneCuttingState.value = CuttingState.READY
+        }
+    }
 
     fun changeFileChoosingState(choosingState: Boolean){
         _fileChoosingState.value = choosingState
-        if (_fileChoosingState.value == true && _ringtoneFolderChoosingState.value == true){
+        if (isRingtoneReadyToMake()){
             _ringtoneCuttingState.value = CuttingState.READY
         }
     }
 
     fun changeRingtoneFolderChoosingState(choosingState: Boolean){
         _ringtoneFolderChoosingState.value = choosingState
-        if (_fileChoosingState.value == true && _ringtoneFolderChoosingState.value == true){
+        if (isRingtoneReadyToMake()){
             _ringtoneCuttingState.value = CuttingState.READY
         }
     }
@@ -66,5 +73,8 @@ class RingtoneViewModel: ViewModel() {
     private fun isTimeFormatFalse(startTime: String?, endTime: String?) = startTime?.toInt() == null || endTime?.toInt() == null
     private fun isRingtoneFolderNotChoosed(ringtonePath: String?) = ringtonePath == null
     private fun isOriginalFileNotChoosed(originalPath: String?) = originalPath == null
+    private fun isRingtoneReadyToMake() = _fileChoosingState.value == true
+            && _ringtoneFolderChoosingState.value == true
+            && _ringtoneNameChoosingState.value == true
 
 }

@@ -21,6 +21,7 @@ class FinalFragment: ViewBindingFragment<FragmentFinalBinding>(FragmentFinalBind
 
     val args: FinalFragmentArgs by navArgs()
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.buttonFinalFragmentPlayRingtone.setOnClickListener {
@@ -31,12 +32,14 @@ class FinalFragment: ViewBindingFragment<FragmentFinalBinding>(FragmentFinalBind
         binding.buttonFinalFragmentSetAsACallMelody.setOnClickListener {
             setRingtone2(args.ringtoneUri)
         }
+
+        binding.textViewFinalFragmentRingtoneName.text = args.ringtoneName
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun setRingtone2(uri: Uri?){
         if (Settings.System.canWrite(requireContext())){
-            createSnackBar("canWrite = true")
+            createSnackBar("Рингтон установлен в качестве мелодии по умолчанию")
             RingtoneManager.setActualDefaultRingtoneUri(
                 requireContext(),
                 RingtoneManager.TYPE_RINGTONE,
@@ -44,7 +47,7 @@ class FinalFragment: ViewBindingFragment<FragmentFinalBinding>(FragmentFinalBind
             )
         } else {
             openAndroidPermissionsMenu()
-            createSnackBar("canWrite = false")
+            createSnackBar("Ошибка установки рингтона. Необходимо ваше разрешение.")
         }
     }
 

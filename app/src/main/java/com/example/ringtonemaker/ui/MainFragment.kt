@@ -11,6 +11,8 @@ import android.os.Bundle
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -42,6 +44,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
     private var originalPath = ""
     private var ringtonePath = ""
     private lateinit var ringtoneUri: Uri
+    private var ringtoneName = "ringtone_${System.currentTimeMillis()}"
     private lateinit var selectDocumentDirectoryLauncher: ActivityResultLauncher<Uri>
     private lateinit var audioPicker: AudioPicker
     private val viewModel: RingtoneViewModel by viewModels()
@@ -97,9 +100,24 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
 //            trimAudio(5, 10, "trimMy.mp3")
             val startTime: String = binding.etMainFragmentStartTime.text.toString()
             val endTime: String = binding.etMainFragmentEndTime.text.toString()
-            ringtonePath = getFilePath()
-            viewModel.trimAudio(originalPath, endTime, startTime, getFilePath())
+            ringtonePath = createFileForRingtone(ringtoneFolderPathName!!, ringtoneName)
+            viewModel.trimAudio(originalPath, endTime, startTime, ringtonePath)
         }
+
+        binding.etMainFragmentSetRingtoneName.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                ringtoneName = s?.toString() ?:""
+                viewModel.changeRingtoneNameChoosingState(s?.isNotBlank() ?:false)
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+        })
 
 
         observeData()
@@ -114,7 +132,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
                     }
                     is CuttingState.SUCCESSFUL -> {
                         isLoading(false)
-                        val action = MainFragmentDirections.actionMainFragmentToFinalFragment(ringtoneUri)
+                        val action = MainFragmentDirections.actionMainFragmentToFinalFragment(ringtoneUri, ringtoneName)
                         findNavController().navigate(action)
                         createSnackBar("рингтон успешно создан")
                     }
@@ -187,52 +205,9 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
         }
     }
 
-    private fun getFilePath(): String {
-        val musicDir = ringtoneFolderPathName
-        val file = File(musicDir, "testRRingtoneFile_${System.currentTimeMillis()}.mp3")
+    private fun createFileForRingtone(ringtoneFolderPath: String, ringtoneName: String): String {
+        val file = File(ringtoneFolderPath, "$ringtoneName.mp3")
         ringtoneUri = Uri.fromFile(file)
         return file.path
     }
-
-//    @RequiresApi(Build.VERSION_CODES.M)
-//    private fun setRingtone(ringtonePath: String){
-//        val k: File = File(ringtonePath) // path is a file playing
-//
-//
-//        val values = ContentValues()
-//        values.put(MediaStore.MediaColumns.DATA, k.absolutePath)
-//        values.put(MediaStore.MediaColumns.TITLE, "My Song title") //You will have to populate
-//
-//        values.put(MediaStore.MediaColumns.SIZE, 215454)
-//        values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3")
-//        values.put(MediaStore.Audio.Media.ARTIST, "Band Name") //You will have to populate this
-//
-//        values.put(MediaStore.Audio.Media.DURATION, 230)
-//        values.put(MediaStore.Audio.Media.IS_RINGTONE, true)
-//        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false)
-//        values.put(MediaStore.Audio.Media.IS_ALARM, false)
-//        values.put(MediaStore.Audio.Media.IS_MUSIC, false)
-//
-////Insert it into the database
-//
-////Insert it into the database
-//        val uri = MediaStore.Audio.Media.getContentUriForPath(k.absolutePath)
-//        val newUri: Uri? = requireContext().contentResolver.insert(uri!!, values)
-//        if (Settings.System.canWrite(requireContext())){
-//            createSnackBar("canWrite = true")
-//            RingtoneManager.setActualDefaultRingtoneUri(
-//                requireContext(),
-//                RingtoneManager.TYPE_RINGTONE,
-//                newUri
-//            )
-//        } else {
-//            openAndroidPermissionsMenu()
-//            createSnackBar("canWrite = false")
-//        }
-//
-//    }
-
-
-
-
 }
