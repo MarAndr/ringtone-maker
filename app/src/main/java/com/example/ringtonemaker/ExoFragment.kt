@@ -81,7 +81,7 @@ class ExoFragment: ViewBindingFragment<FragmentExoplayerBinding>(FragmentExoplay
         simpleExoPlayer = SimpleExoPlayer.Builder(requireContext())
                 .build()
         binding.playerView2.player = simpleExoPlayer
-        val uri = Uri.fromFile(File(args.ringtoneUri))
+        val uri = Uri.fromFile(File(args.ringtonePath))
         val mediaItem = MediaItem.fromUri("https://storage.googleapis.com/exoplayer-test-media-0/play.mp3")
         val mediaItem2 = MediaItem.fromUri(uri)
         simpleExoPlayer.setMediaItem(mediaItem2)

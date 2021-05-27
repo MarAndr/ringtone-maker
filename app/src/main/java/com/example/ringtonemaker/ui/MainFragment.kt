@@ -1,4 +1,4 @@
-package com.example.ringtonemaker
+package com.example.ringtonemaker.ui
 
 import android.Manifest
 import android.content.ContentValues
@@ -21,6 +21,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.ringtonemaker.AudioPicker
+import com.example.ringtonemaker.R
+import com.example.ringtonemaker.ViewBindingFragment
 import com.example.ringtonemaker.databinding.FragmentMainBinding
 import com.example.ringtonemaker.state.CuttingState
 import com.example.ringtonemaker.utils.createSnackBar
@@ -98,15 +101,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
             viewModel.trimAudio(originalPath, endTime, startTime, getFilePath())
         }
 
-        binding.buttonMainFragmentPlayRingtone.setOnClickListener {
-            val action = MainFragmentDirections.actionMainFragmentToExoFragment(ringtonePath)
-            findNavController().navigate(action)
-        }
 
-        binding.buttonMainFragmentSetAsRingtone.setOnClickListener {
-            Timber.d("ringtoneUri = $ringtoneUri")
-            setRingtone2(ringtoneUri)
-        }
         observeData()
     }
 
@@ -119,6 +114,8 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
                     }
                     is CuttingState.SUCCESSFUL -> {
                         isLoading(false)
+                        val action = MainFragmentDirections.actionMainFragmentToFinalFragment(ringtoneUri)
+                        findNavController().navigate(action)
                         createSnackBar("рингтон успешно создан")
                     }
                     is CuttingState.Error -> {
@@ -197,65 +194,45 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
         return file.path
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun setRingtone(ringtonePath: String){
-        val k: File = File(ringtonePath) // path is a file playing
+//    @RequiresApi(Build.VERSION_CODES.M)
+//    private fun setRingtone(ringtonePath: String){
+//        val k: File = File(ringtonePath) // path is a file playing
+//
+//
+//        val values = ContentValues()
+//        values.put(MediaStore.MediaColumns.DATA, k.absolutePath)
+//        values.put(MediaStore.MediaColumns.TITLE, "My Song title") //You will have to populate
+//
+//        values.put(MediaStore.MediaColumns.SIZE, 215454)
+//        values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3")
+//        values.put(MediaStore.Audio.Media.ARTIST, "Band Name") //You will have to populate this
+//
+//        values.put(MediaStore.Audio.Media.DURATION, 230)
+//        values.put(MediaStore.Audio.Media.IS_RINGTONE, true)
+//        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false)
+//        values.put(MediaStore.Audio.Media.IS_ALARM, false)
+//        values.put(MediaStore.Audio.Media.IS_MUSIC, false)
+//
+////Insert it into the database
+//
+////Insert it into the database
+//        val uri = MediaStore.Audio.Media.getContentUriForPath(k.absolutePath)
+//        val newUri: Uri? = requireContext().contentResolver.insert(uri!!, values)
+//        if (Settings.System.canWrite(requireContext())){
+//            createSnackBar("canWrite = true")
+//            RingtoneManager.setActualDefaultRingtoneUri(
+//                requireContext(),
+//                RingtoneManager.TYPE_RINGTONE,
+//                newUri
+//            )
+//        } else {
+//            openAndroidPermissionsMenu()
+//            createSnackBar("canWrite = false")
+//        }
+//
+//    }
 
 
-        val values = ContentValues()
-        values.put(MediaStore.MediaColumns.DATA, k.absolutePath)
-        values.put(MediaStore.MediaColumns.TITLE, "My Song title") //You will have to populate
-
-        values.put(MediaStore.MediaColumns.SIZE, 215454)
-        values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3")
-        values.put(MediaStore.Audio.Media.ARTIST, "Band Name") //You will have to populate this
-
-        values.put(MediaStore.Audio.Media.DURATION, 230)
-        values.put(MediaStore.Audio.Media.IS_RINGTONE, true)
-        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false)
-        values.put(MediaStore.Audio.Media.IS_ALARM, false)
-        values.put(MediaStore.Audio.Media.IS_MUSIC, false)
-
-//Insert it into the database
-
-//Insert it into the database
-        val uri = MediaStore.Audio.Media.getContentUriForPath(k.absolutePath)
-        val newUri: Uri? = requireContext().contentResolver.insert(uri!!, values)
-        if (Settings.System.canWrite(requireContext())){
-            createSnackBar("canWrite = true")
-            RingtoneManager.setActualDefaultRingtoneUri(
-                requireContext(),
-                RingtoneManager.TYPE_RINGTONE,
-                newUri
-            )
-        } else {
-            openAndroidPermissionsMenu()
-            createSnackBar("canWrite = false")
-        }
-
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    fun setRingtone2(uri: Uri?){
-        if (Settings.System.canWrite(requireContext())){
-            createSnackBar("canWrite = true")
-            RingtoneManager.setActualDefaultRingtoneUri(
-                requireContext(),
-                RingtoneManager.TYPE_RINGTONE,
-                uri
-            )
-        } else {
-            openAndroidPermissionsMenu()
-            createSnackBar("canWrite = false")
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun openAndroidPermissionsMenu() {
-        val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-        intent.data = Uri.parse("package:" + requireActivity().packageName)
-        startActivity(intent)
-    }
 
 
 }

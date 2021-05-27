@@ -1,2 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+
+    <style name="TextLabelStyle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="DirectoryLabelTextStyle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:layout_marginLeft">16dp</item>
+    </style>
+
+    <style name="MakeRingtoneButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/yellow_500</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">25sp</item>
+    </style>
+
+</resources>

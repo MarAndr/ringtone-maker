@@ -122,3 +122,7 @@ fun isMediaDocument(uri: Uri): Boolean {
 fun isGooglePhotosUri(uri: Uri): Boolean {
     return "com.google.android.apps.photos.content" == uri.getAuthority()
 }
+
+fun receiveFileNameFromTheFilePath(filePath: String): String{
+    return filePath.substringAfterLast("/")
+}

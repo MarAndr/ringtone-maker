@@ -4,18 +4,29 @@
     app:startDestination="@id/mainFragment">
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.example.ringtonemaker.MainFragment"
+        android:name="com.example.ringtonemaker.ui.MainFragment"
         android:label="MainFragment" >
         <action
-            android:id="@+id/action_mainFragment_to_exoFragment"
-            app:destination="@id/exoFragment" />
+            android:id="@+id/action_mainFragment_to_finalFragment"
+            app:destination="@id/finalFragment" />
     </fragment>
     <fragment
         android:id="@+id/exoFragment"
         android:name="com.example.ringtonemaker.ExoFragment"
         android:label="ExoFragment" >
-        <argument android:name="ringtoneUri"
+        <argument android:name="ringtonePath"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/finalFragment"
+        android:name="com.example.ringtonemaker.ui.FinalFragment"
+        android:label="FinalFragment" >
+        <argument
+            android:name="ringtoneUri"
+            app:argType="android.net.Uri" />
+        <action
+            android:id="@+id/action_finalFragment_to_exoFragment"
+            app:destination="@id/exoFragment" />
     </fragment>
 </navigation>
 
