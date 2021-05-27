@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.ContactsContract.Directory
 import android.view.View
+import androidx.navigation.fragment.navArgs
 import com.example.ringtonemaker.databinding.FragmentExoplayerBinding
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -21,6 +22,7 @@ class ExoFragment: ViewBindingFragment<FragmentExoplayerBinding>(FragmentExoplay
     private var playWhenReady = true;
     private var currentWindow = 0;
     private var playbackPosition: Long = 0;
+    val args: ExoFragmentArgs by navArgs()
 
 
     override fun onStart() {
@@ -79,9 +81,10 @@ class ExoFragment: ViewBindingFragment<FragmentExoplayerBinding>(FragmentExoplay
         simpleExoPlayer = SimpleExoPlayer.Builder(requireContext())
                 .build()
         binding.playerView2.player = simpleExoPlayer
-//        Uri.fromFile(new File(path))
+        val uri = Uri.fromFile(File(args.ringtoneUri))
         val mediaItem = MediaItem.fromUri("https://storage.googleapis.com/exoplayer-test-media-0/play.mp3")
-        simpleExoPlayer.setMediaItem(mediaItem)
+        val mediaItem2 = MediaItem.fromUri(uri)
+        simpleExoPlayer.setMediaItem(mediaItem2)
         simpleExoPlayer.playWhenReady = playWhenReady;
         simpleExoPlayer.seekTo(currentWindow, playbackPosition);
         simpleExoPlayer.prepare();

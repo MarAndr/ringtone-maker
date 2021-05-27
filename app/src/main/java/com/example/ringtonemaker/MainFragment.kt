@@ -2,6 +2,7 @@ package com.example.ringtonemaker
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -32,6 +33,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
     private var ringtoneFolderUri: Uri? = null
     private var ringtoneFolderPathName: String? = null
     private var originalPath = ""
+    private var ringtonePath = ""
     private lateinit var selectDocumentDirectoryLauncher: ActivityResultLauncher<Uri>
     private lateinit var audioPicker: AudioPicker
     private val viewModel: RingtoneViewModel by viewModels()
@@ -85,11 +87,21 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
 //            trimAudio(5, 10, "trimMy.mp3")
             val startTime: String = binding.etMainFragmentStartTime.text.toString()
             val endTime: String = binding.etMainFragmentEndTime.text.toString()
+            ringtonePath = getFilePath()
             viewModel.trimAudio(originalPath, endTime, startTime, getFilePath())
         }
 
         binding.buttonMainFragmentPlayRingtone.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_exoFragment)
+            val action = MainFragmentDirections.actionMainFragmentToExoFragment(ringtonePath)
+            findNavController().navigate(action)
+        }
+
+        binding.buttonMainFragmentSetAsRingtone.setOnClickListener {
+//            RingtoneManager.setActualDefaultRingtoneUri(
+//                requireContext(),
+//                RingtoneManager.TYPE_RINGTONE,
+//                Uri.fromFile(File(ringtonePath))
+//            )
         }
         observeData()
     }
