@@ -1,12 +1,16 @@
 package com.example.ringtonemaker
 
 import android.Manifest
+import android.content.ContentValues
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.DocumentsContract
+import android.provider.MediaStore
+import android.provider.Settings
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,11 +21,11 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.ringtonemaker.utils.getPath
-import com.example.ringtonemaker.const.Constants
 import com.example.ringtonemaker.databinding.FragmentMainBinding
 import com.example.ringtonemaker.state.CuttingState
 import com.example.ringtonemaker.utils.createSnackBar
+import com.example.ringtonemaker.utils.getPath
+import com.example.ringtonemaker.utils.receiveFileNameFromTheFilePath
 import com.example.ringtonemaker.viewmodel.RingtoneViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -34,6 +38,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
     private var ringtoneFolderPathName: String? = null
     private var originalPath = ""
     private var ringtonePath = ""
+    private lateinit var ringtoneUri: Uri
     private lateinit var selectDocumentDirectoryLauncher: ActivityResultLauncher<Uri>
     private lateinit var audioPicker: AudioPicker
     private val viewModel: RingtoneViewModel by viewModels()
@@ -44,7 +49,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
         initSelectDocumentLauncher()
         audioPicker = AudioPicker(requireActivity().activityResultRegistry) {
             originalPath = getPath(requireContext(), it)!!
-            binding.textViewMainFragmentFileName.text = originalPath
+            binding.textViewMainFragmentFileName.text = receiveFileNameFromTheFilePath(originalPath)
         }
     }
 
@@ -59,7 +64,8 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
             ActivityCompat.requestPermissions(
                 requireActivity(), arrayOf<String>(
                     Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_SETTINGS
                 ), 2222
             )
         } else if (ContextCompat.checkSelfPermission(
@@ -70,7 +76,8 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
             ActivityCompat.requestPermissions(
                 requireActivity(), arrayOf<String>(
                     Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_SETTINGS
                 ), 2222
             )
         }
@@ -97,11 +104,8 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
         }
 
         binding.buttonMainFragmentSetAsRingtone.setOnClickListener {
-//            RingtoneManager.setActualDefaultRingtoneUri(
-//                requireContext(),
-//                RingtoneManager.TYPE_RINGTONE,
-//                Uri.fromFile(File(ringtonePath))
-//            )
+            Timber.d("ringtoneUri = $ringtoneUri")
+            setRingtone2(ringtoneUri)
         }
         observeData()
     }
@@ -171,6 +175,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
             uri, DocumentsContract.getTreeDocumentId(uri)
         )
         ringtoneFolderPathName = getPath(requireContext(), docUri)
+        Timber.d("ringtoneFolderPathName = $ringtoneFolderPathName")
         binding.textViewMainFragmentChoosedFolder.text = ringtoneFolderPathName
     }
 
@@ -188,6 +193,69 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
     private fun getFilePath(): String {
         val musicDir = ringtoneFolderPathName
         val file = File(musicDir, "testRRingtoneFile_${System.currentTimeMillis()}.mp3")
+        ringtoneUri = Uri.fromFile(file)
         return file.path
     }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun setRingtone(ringtonePath: String){
+        val k: File = File(ringtonePath) // path is a file playing
+
+
+        val values = ContentValues()
+        values.put(MediaStore.MediaColumns.DATA, k.absolutePath)
+        values.put(MediaStore.MediaColumns.TITLE, "My Song title") //You will have to populate
+
+        values.put(MediaStore.MediaColumns.SIZE, 215454)
+        values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3")
+        values.put(MediaStore.Audio.Media.ARTIST, "Band Name") //You will have to populate this
+
+        values.put(MediaStore.Audio.Media.DURATION, 230)
+        values.put(MediaStore.Audio.Media.IS_RINGTONE, true)
+        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false)
+        values.put(MediaStore.Audio.Media.IS_ALARM, false)
+        values.put(MediaStore.Audio.Media.IS_MUSIC, false)
+
+//Insert it into the database
+
+//Insert it into the database
+        val uri = MediaStore.Audio.Media.getContentUriForPath(k.absolutePath)
+        val newUri: Uri? = requireContext().contentResolver.insert(uri!!, values)
+        if (Settings.System.canWrite(requireContext())){
+            createSnackBar("canWrite = true")
+            RingtoneManager.setActualDefaultRingtoneUri(
+                requireContext(),
+                RingtoneManager.TYPE_RINGTONE,
+                newUri
+            )
+        } else {
+            openAndroidPermissionsMenu()
+            createSnackBar("canWrite = false")
+        }
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun setRingtone2(uri: Uri?){
+        if (Settings.System.canWrite(requireContext())){
+            createSnackBar("canWrite = true")
+            RingtoneManager.setActualDefaultRingtoneUri(
+                requireContext(),
+                RingtoneManager.TYPE_RINGTONE,
+                uri
+            )
+        } else {
+            openAndroidPermissionsMenu()
+            createSnackBar("canWrite = false")
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun openAndroidPermissionsMenu() {
+        val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+        intent.data = Uri.parse("package:" + requireActivity().packageName)
+        startActivity(intent)
+    }
+
+
 }
