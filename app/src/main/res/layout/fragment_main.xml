@@ -64,31 +64,35 @@
         app:layout_constraintTop_toBottomOf="@id/textView_title_chooseFolder" />
 
     <LinearLayout
-        android:gravity="center_horizontal"
-        app:layout_constraintTop_toBottomOf="@id/button_mainFragment_chooseTheFolder"
-        app:layout_constraintBottom_toTopOf="@id/button_mainFragment_createRingtone"
         android:id="@+id/linearLayout_mainFragment_chooseFile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/button_mainFragment_createRingtone"
+        app:layout_constraintTop_toBottomOf="@id/button_mainFragment_chooseTheFolder">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_marginEnd="16dp"
+            android:enabled="false"
             android:id="@+id/textInputLayout_mainFragment_startTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             app:layout_constraintBottom_toTopOf="@id/button_mainFragment_createRingtone"
-            app:layout_constraintTop_toBottomOf="@+id/button_mainFragment_chooseFile"
-            android:layout_marginRight="16dp">
+            app:layout_constraintTop_toBottomOf="@+id/button_mainFragment_chooseFile">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:hint="начальное время"
+                android:inputType="number"
+                android:id="@+id/et_mainFragment_startTime"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:hint="начальное время" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:enabled="false"
             android:id="@+id/textInputLayout_mainFragment_endTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -96,9 +100,11 @@
             app:layout_constraintTop_toBottomOf="@+id/button_mainFragment_chooseFile">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:hint="начальное время"
+                android:inputType="number"
+                android:id="@+id/et_mainFragment_endTime"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:hint="начальное время" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -117,13 +123,34 @@
 
 
     <Button
+        android:enabled="false"
         android:id="@+id/button_mainFragment_createRingtone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="сделать рингтон"
+        android:text="создать рингтон"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/linearLayout_mainFragment_chooseFile" />
+
+    <ProgressBar
+        android:visibility="invisible"
+        android:id="@+id/progressBar_mainFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button_mainFragment_playRingtone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="прослушать рингтон"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_mainFragment_createRingtone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

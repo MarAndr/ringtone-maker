@@ -2,9 +2,21 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main_nav"
     app:startDestination="@id/mainFragment">
-
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.example.ringtonemaker.MainFragment"
-        android:label="MainFragment" />
+        android:label="MainFragment" >
+        <action
+            android:id="@+id/action_mainFragment_to_exoFragment"
+            app:destination="@id/exoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/exoFragment"
+        android:name="com.example.ringtonemaker.ExoFragment"
+        android:label="ExoFragment" >
+        <argument android:name="ringtoneUri"
+            app:argType="string" />
+    </fragment>
 </navigation>
+
+

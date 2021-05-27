@@ -1,4 +1,4 @@
-package com.example.mylab.const
+package com.example.ringtonemaker.const
 
 object Constants {
     const val MIMETYPE_MUSIC = "audio/mpeg"
