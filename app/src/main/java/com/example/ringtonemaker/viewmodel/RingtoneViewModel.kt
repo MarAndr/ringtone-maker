@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class RingtoneViewModel: ViewModel() {
+class RingtoneViewModel : ViewModel() {
     private val _ringtoneCuttingState = MutableStateFlow<CuttingState>(CuttingState.Empty)
     val ringtoneCuttingState: StateFlow<CuttingState> = _ringtoneCuttingState
     private val repository = Repository()
@@ -19,43 +19,46 @@ class RingtoneViewModel: ViewModel() {
     private val _ringtoneNameChoosingState = MutableLiveData(false)
 
 
-    fun changeRingtoneNameChoosingState(ringtoneNameChoosingState: Boolean){
+    fun changeRingtoneNameChoosingState(ringtoneNameChoosingState: Boolean) {
         _ringtoneNameChoosingState.value = ringtoneNameChoosingState
-        if (isRingtoneReadyToMake()){
+        if (isRingtoneReadyToMake()) {
             _ringtoneCuttingState.value = CuttingState.READY
         }
     }
 
-    fun changeFileChoosingState(choosingState: Boolean){
+    fun changeFileChoosingState(choosingState: Boolean) {
         _fileChoosingState.value = choosingState
-        if (isRingtoneReadyToMake()){
+        if (isRingtoneReadyToMake()) {
             _ringtoneCuttingState.value = CuttingState.READY
         }
     }
 
-    fun changeRingtoneFolderChoosingState(choosingState: Boolean){
+    fun changeRingtoneFolderChoosingState(choosingState: Boolean) {
         _ringtoneFolderChoosingState.value = choosingState
-        if (isRingtoneReadyToMake()){
+        if (isRingtoneReadyToMake()) {
             _ringtoneCuttingState.value = CuttingState.READY
         }
     }
 
-    fun trimAudio(originalPath: String, startTime: String, endTime: String, ringtonePath: String){
+    fun trimAudio(originalPath: String, startTime: String, endTime: String, ringtonePath: String) {
         _ringtoneCuttingState.value = CuttingState.LOADING
+
+//    "fade=in:st=0:d=5",
+//    "fade=in:5:8",
         val cmd = arrayOf(
-            "-i",
-            originalPath,
-            "-ss",
-            "00:00:$startTime",
-            "-t",
-            "00:00:$endTime",
-            "-c",
-            "copy",
-            ringtonePath
+                "-i",
+                originalPath,
+                "-ss",
+                "00:00:$startTime",
+                "-t",
+                "00:00:$endTime",
+                "-c",
+                "copy",
+                ringtonePath
         )
 
         viewModelScope.launch {
-            repository.execFFMpegBinary(cmd){ isCuttingSuccessful ->
+            repository.execFFMpegBinary(cmd) { isCuttingSuccessful ->
                 when {
                     isCuttingSuccessful -> {
                         _ringtoneCuttingState.value = CuttingState.SUCCESSFUL
@@ -70,9 +73,6 @@ class RingtoneViewModel: ViewModel() {
     }
 
     private fun isTimeEmpty(startTime: String?, endTime: String?) = startTime?.isBlank() == true || endTime?.isBlank() == true
-    private fun isTimeFormatFalse(startTime: String?, endTime: String?) = startTime?.toInt() == null || endTime?.toInt() == null
-    private fun isRingtoneFolderNotChoosed(ringtonePath: String?) = ringtonePath == null
-    private fun isOriginalFileNotChoosed(originalPath: String?) = originalPath == null
     private fun isRingtoneReadyToMake() = _fileChoosingState.value == true
             && _ringtoneFolderChoosingState.value == true
             && _ringtoneNameChoosingState.value == true

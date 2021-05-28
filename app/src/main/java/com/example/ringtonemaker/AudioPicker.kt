@@ -8,7 +8,7 @@ import com.example.ringtonemaker.const.Constants
 
 class AudioPicker(
     activityResultRegistry: ActivityResultRegistry,
-    callback: (audioUri: Uri) -> Unit
+    callback: (audioUri: Uri?) -> Unit
 ){
     private val getContent: ActivityResultLauncher<String> = activityResultRegistry.register(
         REGISTRY_KEY, ActivityResultContracts.GetContent(), callback)
