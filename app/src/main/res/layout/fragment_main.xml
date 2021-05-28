@@ -80,6 +80,7 @@
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_mainFragment_setRingtoneName"
+                android:textColorHint="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="введите название рингтона" />
@@ -96,7 +97,9 @@
         style="@style/TextLabelStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Выберите временной интервал:"
+        android:textColor="@color/red_500"
+        android:text="@string/chooseTimeHeaderInactive"
+        android:gravity="center_horizontal"
         app:layout_constraintBottom_toTopOf="@id/linearLayout_mainFragment_chooseTimeInterval"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

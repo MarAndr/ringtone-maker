@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">RingtoneMaker</string>
+    <string name="chooseTimeHeaderActive">Выберите временной интервал:</string>
+    <string name="chooseTimeHeaderInactive">Введите информацию вверху экрана</string>
 </resources>

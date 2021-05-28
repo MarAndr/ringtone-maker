@@ -13,8 +13,6 @@
     </style>
 
     <style name="MakeRingtoneButtonStyle" parent="Widget.MaterialComponents.Button">
-        <item name="backgroundTint">@color/yellow_500</item>
-        <item name="android:textStyle">bold</item>
         <item name="android:textSize">25sp</item>
     </style>
 

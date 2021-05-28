@@ -12,11 +12,9 @@ class FolderPicker(
         activityResultRegistry: ActivityResultRegistry,
         callback: (folderUri: Uri?) -> Unit
 ) {
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private val selectDocumentDirectoryLauncher: ActivityResultLauncher<Uri> = activityResultRegistry.register(
             REGISTRY_KEY, ActivityResultContracts.OpenDocumentTree(), callback)
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun chooseFolder() {
         selectDocumentDirectoryLauncher.launch(null)
     }
