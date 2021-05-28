@@ -43,12 +43,12 @@ class RingtoneViewModel @ViewModelInject constructor(private val context: Applic
 
     fun handleSelectFile(uri: Uri?) {
         if (uri == null) {
-            _ringtoneFolderChoosingState.value = false
+            changeFileChoosingState(false)
             //snackbar
             return
         } else {
             _originalPath.value = getPath(context, uri)!!
-            _ringtoneFolderChoosingState.value = false
+            changeFileChoosingState(true)
 //            binding.textViewMainFragmentFileName.text =
 //                receiveFileNameFromTheFilePath(originalFilePath)
         }
@@ -56,13 +56,13 @@ class RingtoneViewModel @ViewModelInject constructor(private val context: Applic
 
     fun handleSelectedFolderUri(selectedFolderUri: Uri?){
         if (selectedFolderUri == null) {
-            _ringtoneFolderChoosingState.value = false
+            changeRingtoneFolderChoosingState(false)
             return
         } else {
             val docUri = DocumentsContract.buildDocumentUriUsingTree(
                 selectedFolderUri, DocumentsContract.getTreeDocumentId(selectedFolderUri)
             )
-            _ringtoneFolderChoosingState.value = true
+            changeRingtoneFolderChoosingState(true)
             _ringtoneFolderPathName.value = getPath(context, docUri)!!
         }
     }
@@ -98,7 +98,7 @@ class RingtoneViewModel @ViewModelInject constructor(private val context: Applic
         }
     }
 
-    fun trimAudio(originalPath: String, startTime: String, endTime: String, ringtonePath: String) {
+    fun trimAudio(startTime: String, endTime: String) {
         createFileForRingtone(_ringtoneFolderPathName.value.orEmpty(), _ringtoneName.value.orEmpty())
         _ringtoneCuttingState.value = CuttingState.LOADING
 

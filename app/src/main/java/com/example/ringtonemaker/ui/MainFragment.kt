@@ -31,9 +31,9 @@ import java.io.File
 @AndroidEntryPoint
 class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBinding::inflate) {
 
-    private var ringtoneFolderPathName: String? = null
-    private var originalFilePath = ""
-    private var ringtonePath = ""
+//    private var ringtoneFolderPathName: String? = null
+//    private var originalFilePath = ""
+//    private var ringtonePath = ""
     private lateinit var ringtoneUri: Uri
     private var ringtoneName = "ringtone_${System.currentTimeMillis()}"
 
@@ -80,14 +80,14 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
         }
 
         binding.buttonMainFragmentChooseTheFolder.setOnClickListener {
-            chooseFolder()
+            folderPicker.chooseFolder()
         }
 
         binding.buttonMainFragmentCreateRingtone.setOnClickListener {
             val startTime: String = binding.etMainFragmentStartTime.text.toString()
             val endTime: String = binding.etMainFragmentEndTime.text.toString()
 //            ringtonePath = createFileForRingtone(ringtoneFolderPathName!!, ringtoneName)
-            viewModel.trimAudio(originalFilePath, endTime, startTime, ringtonePath)
+            viewModel.trimAudio(endTime, startTime)
         }
 
 
@@ -128,13 +128,19 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
 
         }
 
-        viewModel.ringtoneFolderPathName.observe(viewLifecycleOwner){ringtoneFolderPathName ->
+        viewModel.ringtoneFolderPathName.observe(viewLifecycleOwner) { ringtoneFolderPathName ->
             binding.textViewMainFragmentChoosedFolder.text = ringtoneFolderPathName
         }
-    }
-
-    private fun chooseFolder() {
-        folderPicker.chooseFolder()
+        viewModel.originalPath.observe(viewLifecycleOwner) { originalFilePath ->
+            binding.textViewMainFragmentFileName.text =
+                receiveFileNameFromTheFilePath(originalFilePath)
+        }
+        viewModel.ringtoneUri.observe(viewLifecycleOwner){ringtoneUri ->
+            this.ringtoneUri = ringtoneUri
+        }
+        viewModel.ringtoneName.observe(viewLifecycleOwner){ringtoneName ->
+            this.ringtoneName = ringtoneName
+        }
     }
 
     private fun isLoading(boolean: Boolean) {
@@ -167,33 +173,33 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
             }
     }
 
-    private fun handleSelectFile(uri: Uri?) {
-        if (uri == null) {
-            viewModel.changeFileChoosingState(false)
-            createSnackBar("Файл не выбран")
-            return
-        } else {
-            originalFilePath = getPath(requireContext(), uri)!!
-            viewModel.changeFileChoosingState(true)
-            binding.textViewMainFragmentFileName.text =
-                receiveFileNameFromTheFilePath(originalFilePath)
-        }
-    }
+//    private fun handleSelectFile(uri: Uri?) {
+//        if (uri == null) {
+//            viewModel.changeFileChoosingState(false)
+//            createSnackBar("Файл не выбран")
+//            return
+//        } else {
+////            originalFilePath = getPath(requireContext(), uri)!!
+//            viewModel.changeFileChoosingState(true)
+////            binding.textViewMainFragmentFileName.text =
+////                receiveFileNameFromTheFilePath(originalFilePath)
+//        }
+//    }
 
-    private fun handleSelectDirectory(uri: Uri?) {
-        if (uri == null) {
-            viewModel.changeRingtoneFolderChoosingState(false)
-            createSnackBar("Папка не выбрана")
-            return
-        } else {
-            val docUri = DocumentsContract.buildDocumentUriUsingTree(
-                uri, DocumentsContract.getTreeDocumentId(uri)
-            )
-            viewModel.changeRingtoneFolderChoosingState(true)
-            ringtoneFolderPathName = getPath(requireContext(), docUri)
-            binding.textViewMainFragmentChoosedFolder.text = ringtoneFolderPathName
-        }
-    }
+//    private fun handleSelectDirectory(uri: Uri?) {
+//        if (uri == null) {
+//            viewModel.changeRingtoneFolderChoosingState(false)
+//            createSnackBar("Папка не выбрана")
+//            return
+//        } else {
+//            val docUri = DocumentsContract.buildDocumentUriUsingTree(
+//                uri, DocumentsContract.getTreeDocumentId(uri)
+//            )
+//            viewModel.changeRingtoneFolderChoosingState(true)
+//            ringtoneFolderPathName = getPath(requireContext(), docUri)
+//            binding.textViewMainFragmentChoosedFolder.text = ringtoneFolderPathName
+//        }
+//    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -202,13 +208,13 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 2222) {
-            chooseFolder()
+            folderPicker.chooseFolder()
         }
     }
 
-    private fun createFileForRingtone(ringtoneFolderPath: String, ringtoneName: String): String {
-        val file = File(ringtoneFolderPath, "$ringtoneName.mp3")
-        ringtoneUri = Uri.fromFile(file)
-        return file.path
-    }
+//    private fun createFileForRingtone(ringtoneFolderPath: String, ringtoneName: String): String {
+//        val file = File(ringtoneFolderPath, "$ringtoneName.mp3")
+//        ringtoneUri = Uri.fromFile(file)
+//        return file.path
+//    }
 }
