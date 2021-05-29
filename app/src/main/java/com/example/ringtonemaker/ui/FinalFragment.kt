@@ -20,7 +20,7 @@ import timber.log.Timber
 
 class FinalFragment: ViewBindingFragment<FragmentFinalBinding>(FragmentFinalBinding::inflate) {
 
-    val args: FinalFragmentArgs by navArgs()
+    private val args: FinalFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +44,6 @@ class FinalFragment: ViewBindingFragment<FragmentFinalBinding>(FragmentFinalBind
         binding.textViewFinalFragmentRingtonePath.text = args.ringtonePath
 
         val callback = requireActivity().onBackPressedDispatcher.addCallback{
-//            BackPressedDialog().show(childFragmentManager, "backPressedDialog")
             findNavController().navigate(R.id.action_finalFragment_to_backPressedDialog2)
             isEnabled = true
         }

@@ -25,6 +25,7 @@ import com.example.ringtonemaker.utils.receiveFileNameFromTheFilePath
 import com.example.ringtonemaker.viewmodel.RingtoneViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -56,12 +57,10 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
         binding.scrollChoiceStartSeconds.visibleItemCount = 2
         binding.scrollChoiceStartMinutes.visibleItemCount = 2
         binding.scrollChoiceStartSeconds.setOnItemSelectedListener { scrollChoice, position, name ->
-            startTimeMinutes = name
-            Timber.d("startTime = $startTimeMinutes")
+            startTimeSeconds = name
         }
         binding.scrollChoiceStartMinutes.setOnItemSelectedListener { scrollChoice, position, name ->
-            startTimeSeconds = name
-            Timber.d("startTime = $startTimeMinutes")
+            startTimeMinutes = name
         }
 
         binding.scrollChoiceEndSeconds.addItems(generateTimeList(),0)
@@ -69,12 +68,10 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
         binding.scrollChoiceEndSeconds.visibleItemCount = 2
         binding.scrollChoiceEndMinutes.visibleItemCount = 2
         binding.scrollChoiceEndSeconds.setOnItemSelectedListener { scrollChoice, position, name ->
-            endTimeMinutes = name
-            Timber.d("startTime = $startTimeMinutes")
-        }
-        binding.scrollChoiceStartMinutes.setOnItemSelectedListener { scrollChoice, position, name ->
             endTimeSeconds = name
-            Timber.d("startTime = $startTimeMinutes")
+        }
+        binding.scrollChoiceEndMinutes.setOnItemSelectedListener { scrollChoice, position, name ->
+            endTimeMinutes = name
         }
 
         if (ContextCompat.checkSelfPermission(
@@ -109,9 +106,12 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
         }
 
         binding.buttonMainFragmentCreateRingtone.setOnClickListener {
-//            val startTime: String = binding.etMainFragmentStartTime.text.toString()
-//            val endTime: String = binding.etMainFragmentEndTime.text.toString()
-            viewModel.trimAudio(endTimeMinutes, startTimeMinutes)
+            viewModel.trimAudio(
+                startTimeMinutes = startTimeMinutes,
+                startTimeSeconds = startTimeSeconds,
+                endTimeMinutes = endTimeMinutes,
+                endTimeSeconds = endTimeSeconds
+            )
         }
 
 
@@ -123,7 +123,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
     }
 
     private fun observeData() {
-        lifecycleScope.launchWhenStarted {
+        lifecycleScope.launch {
             viewModel.ringtoneCuttingState.collect { cuttingState ->
                 when (cuttingState) {
                     is CuttingState.LOADING -> {
@@ -180,7 +180,13 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
 
     private fun isCuttingRingtoneButtonEnable(isEnable: Boolean) {
         binding.buttonMainFragmentCreateRingtone.isEnabled = isEnable
+
         if (isEnable) {
+            binding.scrollChoiceStartMinutes.selectedItemTextColor = R.color.red_500
+            binding.scrollChoiceStartMinutes.selectedItemTextColor = R.color.red_500
+            binding.scrollChoiceStartSeconds.selectedItemTextColor = R.color.red_500
+            binding.scrollChoiceEndMinutes.selectedItemTextColor = R.color.red_500
+            binding.scrollChoiceEndSeconds.selectedItemTextColor = R.color.red_500
             binding.textViewMainFragmentChooseTimeLabel.setTextColor(Color.BLACK)
             binding.textViewMainFragmentChooseTimeLabel.setText(R.string.chooseTimeHeaderActive)
         }

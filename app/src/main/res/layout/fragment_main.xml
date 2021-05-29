@@ -161,9 +161,9 @@
                 app:scroll_indicator="true"
                 app:scroll_indicator_size="1dp"
                 app:scroll_item_align="center"
-                app:scroll_item_text_color="#787878"
+                app:scroll_item_text_color="@color/grey_200"
                 app:scroll_item_text_size="18sp"
-                app:scroll_selected_item_text_color="?attr/colorPrimary" />
+                app:scroll_selected_item_text_color="@color/grey_200" />
 
             <com.webianks.library.scroll_choice.ScrollChoice
                 android:id="@+id/scroll_choice_startSeconds"
@@ -174,9 +174,9 @@
                 app:scroll_indicator="true"
                 app:scroll_indicator_size="1dp"
                 app:scroll_item_align="center"
-                app:scroll_item_text_color="#787878"
+                app:scroll_item_text_color="@color/grey_200"
                 app:scroll_item_text_size="18sp"
-                app:scroll_selected_item_text_color="?attr/colorPrimary" />
+                app:scroll_selected_item_text_color="@color/grey_200" />
 
         </LinearLayout>
 
@@ -209,9 +209,9 @@
                 app:scroll_indicator="true"
                 app:scroll_indicator_size="1dp"
                 app:scroll_item_align="center"
-                app:scroll_item_text_color="#787878"
+                app:scroll_item_text_color="@color/grey_200"
                 app:scroll_item_text_size="18sp"
-                app:scroll_selected_item_text_color="?attr/colorPrimary" />
+                app:scroll_selected_item_text_color="@color/grey_200" />
 
             <com.webianks.library.scroll_choice.ScrollChoice
                 android:id="@+id/scroll_choice_endSeconds"
@@ -222,9 +222,9 @@
                 app:scroll_indicator="true"
                 app:scroll_indicator_size="1dp"
                 app:scroll_item_align="center"
-                app:scroll_item_text_color="#787878"
+                app:scroll_item_text_color="@color/grey_200"
                 app:scroll_item_text_size="18sp"
-                app:scroll_selected_item_text_color="?attr/colorPrimary" />
+                app:scroll_selected_item_text_color="@color/grey_200" />
 
         </LinearLayout>
 

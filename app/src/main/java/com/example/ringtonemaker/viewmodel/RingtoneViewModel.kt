@@ -15,7 +15,10 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 
-class RingtoneViewModel @ViewModelInject constructor(private val context: Application, private val repository: Repository): ViewModel() {
+class RingtoneViewModel @ViewModelInject constructor(
+    private val context: Application,
+    private val repository: Repository
+) : ViewModel() {
 
     private val _ringtoneCuttingState = MutableStateFlow<CuttingState>(CuttingState.EMPTY)
     val ringtoneCuttingState: StateFlow<CuttingState> = _ringtoneCuttingState
@@ -44,7 +47,7 @@ class RingtoneViewModel @ViewModelInject constructor(private val context: Applic
         }
     }
 
-    fun handleSelectedFolderUri(selectedFolderUri: Uri?){
+    fun handleSelectedFolderUri(selectedFolderUri: Uri?) {
         if (selectedFolderUri == null) {
             changeRingtoneFolderChoosingState(false)
             _ringtoneCuttingState.value = CuttingState.NOTCHOSEN
@@ -58,13 +61,13 @@ class RingtoneViewModel @ViewModelInject constructor(private val context: Applic
         }
     }
 
-    private fun createFileForRingtone(ringtoneFolderPathName: String, ringtoneName: String){
+    private fun createFileForRingtone(ringtoneFolderPathName: String, ringtoneName: String) {
         val file = File(ringtoneFolderPathName, "$ringtoneName.mp3")
         _ringtoneUri.value = Uri.fromFile(file)
-        _ringtonePath.value =  file.path
+        _ringtonePath.value = file.path
     }
 
-    fun getRingtoneName(string: String?){
+    fun getRingtoneName(string: String?) {
         _ringtoneName.value = string.orEmpty()
     }
 
@@ -89,37 +92,33 @@ class RingtoneViewModel @ViewModelInject constructor(private val context: Applic
         }
     }
 
-    fun trimAudio(startTime: String, endTime: String) {
-        createFileForRingtone(_ringtoneFolderPathName.value.orEmpty(), _ringtoneName.value.orEmpty())
+    fun trimAudio(
+        startTimeMinutes: String,
+        startTimeSeconds: String,
+        endTimeMinutes: String,
+        endTimeSeconds: String
+    ) {
+        createFileForRingtone(
+            _ringtoneFolderPathName.value.orEmpty(),
+            _ringtoneName.value.orEmpty()
+        )
         _ringtoneCuttingState.value = CuttingState.LOADING
 
 //    "fade=in:st=0:d=5",
 //    "fade=in:5:8",
-        val duration = (endTime.toInt() - startTime.toInt())/1000
-        val startTimeInt = startTime.toInt()
-        val endTimeInt = endTime.toInt()
-//        val cmd = arrayOf(
-//                "-ss",
-//                "-i",
-//                _originalPath.value.orEmpty(),
-//                "${startTimeInt/1000}",
-//                "-t",
-//                "${endTimeInt/1000}",
-//                "-c",
-//                "copy",
-//                _ringtonePath.value.orEmpty()
-//        )
+
 
         val cmd = arrayOf(
-                "-i",
-                _originalPath.value.orEmpty(),
-                "-ss",
-                "00:00:$endTime",
-                "-to",
-                "00:00:$startTime",
-                "-c",
-                "copy",
-                _ringtonePath.value.orEmpty()
+            "-i",
+            _originalPath.value.orEmpty(),
+            "-ss",
+            "00:$startTimeMinutes:$startTimeSeconds",
+            "-to",
+            "00:$endTimeMinutes:$endTimeSeconds",
+            "-c",
+            "copy",
+            "-copyts",
+            _ringtonePath.value.orEmpty()
         )
 
         viewModelScope.launch {
@@ -128,8 +127,9 @@ class RingtoneViewModel @ViewModelInject constructor(private val context: Applic
                     isCuttingSuccessful -> {
                         _ringtoneCuttingState.value = CuttingState.SUCCESSFUL
                     }
-                    isTimeEmpty(startTime, endTime) -> {
-                        _ringtoneCuttingState.value = CuttingState.ERROR("Введите временной интервал")
+                    isTimeEmpty(startTimeMinutes, startTimeSeconds, endTimeMinutes, endTimeSeconds) -> {
+                        _ringtoneCuttingState.value =
+                            CuttingState.ERROR("Введите временной интервал")
                     }
                     else -> _ringtoneCuttingState.value = CuttingState.ERROR("Неизвестная ошибка!")
                 }
@@ -137,7 +137,14 @@ class RingtoneViewModel @ViewModelInject constructor(private val context: Applic
         }
     }
 
-    private fun isTimeEmpty(startTime: String?, endTime: String?) = startTime?.isBlank() == true || endTime?.isBlank() == true
+    private fun isTimeEmpty(
+        startTimeMinutes: String,
+        startTimeSeconds: String,
+        endTimeMinutes: String,
+        endTimeSeconds: String
+    ) = startTimeMinutes.toInt() == 0 && startTimeSeconds.toInt() == 0
+            && endTimeMinutes.toInt() == 0 && endTimeSeconds.toInt() == 0
+
     private fun isRingtoneReadyToMake() = _fileChoosingState.value == true
             && _ringtoneFolderChoosingState.value == true
             && _ringtoneNameChoosingState.value == true
