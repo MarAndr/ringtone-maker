@@ -114,40 +114,120 @@
         app:layout_constraintBottom_toTopOf="@id/button_mainFragment_createRingtone"
         app:layout_constraintTop_toBottomOf="@id/textView_mainFragment_chooseTimeLabel">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_marginEnd="40dp"
+                android:layout_toLeftOf="@id/label_seconds"
+                android:textSize="18sp"
+                android:text="Минуты"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_marginEnd="20dp"
+                android:id="@+id/label_seconds"
+                android:layout_alignParentEnd="true"
+                android:textSize="18sp"
+                android:text="Секунды"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout_mainFragment_startTime"
+        <LinearLayout
+            android:id="@+id/linearLayout_startTime_scroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
-            app:layout_constraintBottom_toTopOf="@id/button_mainFragment_createRingtone"
-            app:layout_constraintTop_toBottomOf="@+id/button_mainFragment_chooseFile">
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/btn_startOptionFragment"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_fragmentStartOption_weightHeader">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_mainFragment_startTime"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:text="Начало:"
+                android:layout_marginEnd="16dp"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <com.webianks.library.scroll_choice.ScrollChoice
+                android:id="@+id/scroll_choice_startMinutes"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="начало"
-                android:inputType="number" />
+                android:layout_weight="1"
+                app:scroll_background_color="#FFFFFF"
+                app:scroll_indicator="true"
+                app:scroll_indicator_size="1dp"
+                app:scroll_item_align="center"
+                app:scroll_item_text_color="#787878"
+                app:scroll_item_text_size="18sp"
+                app:scroll_selected_item_text_color="?attr/colorPrimary" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <com.webianks.library.scroll_choice.ScrollChoice
+                android:id="@+id/scroll_choice_startSeconds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:scroll_background_color="#FFFFFF"
+                app:scroll_indicator="true"
+                app:scroll_indicator_size="1dp"
+                app:scroll_item_align="center"
+                app:scroll_item_text_color="#787878"
+                app:scroll_item_text_size="18sp"
+                app:scroll_selected_item_text_color="?attr/colorPrimary" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout_mainFragment_endTime"
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout_endTime_scroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
-            app:layout_constraintBottom_toTopOf="@id/button_mainFragment_chooseTheFolder"
-            app:layout_constraintTop_toBottomOf="@+id/button_mainFragment_chooseFile">
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/btn_startOptionFragment"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_fragmentStartOption_weightHeader">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_mainFragment_endTime"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_marginEnd="27dp"
+                android:textSize="20sp"
+                android:layout_gravity="center_vertical"
+                android:text="Конец:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <com.webianks.library.scroll_choice.ScrollChoice
+                android:id="@+id/scroll_choice_endMinutes"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="конец"
-                android:inputType="number" />
+                android:layout_weight="1"
+                app:scroll_background_color="#FFFFFF"
+                app:scroll_indicator="true"
+                app:scroll_indicator_size="1dp"
+                app:scroll_item_align="center"
+                app:scroll_item_text_color="#787878"
+                app:scroll_item_text_size="18sp"
+                app:scroll_selected_item_text_color="?attr/colorPrimary" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <com.webianks.library.scroll_choice.ScrollChoice
+                android:id="@+id/scroll_choice_endSeconds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:scroll_background_color="#FFFFFF"
+                app:scroll_indicator="true"
+                app:scroll_indicator_size="1dp"
+                app:scroll_item_align="center"
+                app:scroll_item_text_color="#787878"
+                app:scroll_item_text_size="18sp"
+                app:scroll_selected_item_text_color="?attr/colorPrimary" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
