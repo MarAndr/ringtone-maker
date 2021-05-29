@@ -95,13 +95,28 @@ class RingtoneViewModel @ViewModelInject constructor(private val context: Applic
 
 //    "fade=in:st=0:d=5",
 //    "fade=in:5:8",
+        val duration = (endTime.toInt() - startTime.toInt())/1000
+        val startTimeInt = startTime.toInt()
+        val endTimeInt = endTime.toInt()
+//        val cmd = arrayOf(
+//                "-ss",
+//                "-i",
+//                _originalPath.value.orEmpty(),
+//                "${startTimeInt/1000}",
+//                "-t",
+//                "${endTimeInt/1000}",
+//                "-c",
+//                "copy",
+//                _ringtonePath.value.orEmpty()
+//        )
+
         val cmd = arrayOf(
                 "-i",
                 _originalPath.value.orEmpty(),
                 "-ss",
-                "00:00:$startTime",
-                "-t",
                 "00:00:$endTime",
+                "-to",
+                "00:00:$startTime",
                 "-c",
                 "copy",
                 _ringtonePath.value.orEmpty()

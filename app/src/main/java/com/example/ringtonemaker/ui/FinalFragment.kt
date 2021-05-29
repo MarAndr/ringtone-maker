@@ -31,7 +31,8 @@ class FinalFragment: ViewBindingFragment<FragmentFinalBinding>(FragmentFinalBind
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.buttonFinalFragmentPlayRingtone.setOnClickListener {
-            val action = FinalFragmentDirections.actionFinalFragmentToExoFragment(args.ringtoneUri.path!!)
+//            val action = FinalFragmentDirections.actionFinalFragmentToExoFragment(args.ringtoneUri.path!!)
+            val action = FinalFragmentDirections.actionFinalFragmentToExoPlayerBottomDialog(args.ringtonePath)
             findNavController().navigate(action)
         }
 

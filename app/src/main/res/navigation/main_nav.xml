@@ -36,6 +36,9 @@
         <action
             android:id="@+id/action_finalFragment_to_backPressedDialog2"
             app:destination="@id/backPressedDialog" />
+        <action
+            android:id="@+id/action_finalFragment_to_exoPlayerBottomDialog"
+            app:destination="@id/exoPlayerBottomDialog" />
     </fragment>
     <dialog
         android:id="@+id/backPressedDialog"
@@ -44,6 +47,14 @@
         <action
             android:id="@+id/action_backPressedDialog_to_mainFragment"
             app:destination="@id/mainFragment" />
+    </dialog>
+    <dialog
+        android:id="@+id/exoPlayerBottomDialog"
+        android:name="com.example.ringtonemaker.ui.ExoPlayerBottomDialog"
+        android:label="ExoPlayerBottomDialog" >
+        <argument
+            android:name="ringtonePath"
+            app:argType="string" />
     </dialog>
 </navigation>
 
