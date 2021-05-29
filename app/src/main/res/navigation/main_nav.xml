@@ -12,7 +12,7 @@
     </fragment>
     <fragment
         android:id="@+id/exoFragment"
-        android:name="com.example.ringtonemaker.ExoFragment"
+        android:name="com.example.ringtonemaker.ui.ExoFragment"
         android:label="ExoFragment" >
         <argument android:name="ringtonePath"
             app:argType="string" />
@@ -30,7 +30,21 @@
         <argument
             android:name="ringtoneName"
             app:argType="string" />
+        <argument
+            android:name="ringtonePath"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_finalFragment_to_backPressedDialog2"
+            app:destination="@id/backPressedDialog" />
     </fragment>
+    <dialog
+        android:id="@+id/backPressedDialog"
+        android:name="com.example.ringtonemaker.ui.BackPressedDialog"
+        android:label="BackPressedDialog" >
+        <action
+            android:id="@+id/action_backPressedDialog_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </dialog>
 </navigation>
 
 

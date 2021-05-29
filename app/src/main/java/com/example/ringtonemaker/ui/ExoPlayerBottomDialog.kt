@@ -1,29 +1,33 @@
-package com.example.ringtonemaker
+package com.example.ringtonemaker.ui
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import android.os.Environment
-import android.provider.ContactsContract.Directory
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
-import com.example.ringtonemaker.databinding.FragmentExoplayerBinding
+import com.example.ringtonemaker.ExoFragmentArgs
+import com.example.ringtonemaker.R
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.io.File
 
+class ExoPlayerBottomDialog: BottomSheetDialogFragment() {
 
-class ExoFragment: ViewBindingFragment<FragmentExoplayerBinding>(FragmentExoplayerBinding::inflate) {
     private lateinit var simpleExoPlayer: SimpleExoPlayer
     private var playWhenReady = true;
     private var currentWindow = 0;
     private var playbackPosition: Long = 0;
     val args: ExoFragmentArgs by navArgs()
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.dialog_exoplayer, container)
+    }
 
     override fun onStart() {
         super.onStart()
@@ -97,4 +101,5 @@ class ExoFragment: ViewBindingFragment<FragmentExoplayerBinding>(FragmentExoplay
                 )
                 )
     }
+
 }

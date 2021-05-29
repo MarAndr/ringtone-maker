@@ -2,30 +2,22 @@ package com.example.ringtonemaker.viewmodel
 
 
 import android.app.Application
-import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import com.example.ringtonemaker.FolderPicker
 import com.example.ringtonemaker.repository.Repository
 import com.example.ringtonemaker.state.CuttingState
-import com.example.ringtonemaker.utils.createSnackBar
 import com.example.ringtonemaker.utils.getPath
-import com.example.ringtonemaker.utils.receiveFileNameFromTheFilePath
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.io.File
-import javax.inject.Inject
 
 
 class RingtoneViewModel @ViewModelInject constructor(private val context: Application, private val repository: Repository): ViewModel() {
 
-    private val _ringtoneCuttingState = MutableStateFlow<CuttingState>(CuttingState.Empty)
+    private val _ringtoneCuttingState = MutableStateFlow<CuttingState>(CuttingState.EMPTY)
     val ringtoneCuttingState: StateFlow<CuttingState> = _ringtoneCuttingState
     private val _fileChoosingState = MutableLiveData(false)
     private val _ringtoneFolderChoosingState = MutableLiveData(false)
@@ -44,19 +36,18 @@ class RingtoneViewModel @ViewModelInject constructor(private val context: Applic
     fun handleSelectFile(uri: Uri?) {
         if (uri == null) {
             changeFileChoosingState(false)
-            //snackbar
+            _ringtoneCuttingState.value = CuttingState.NOTCHOSEN
             return
         } else {
             _originalPath.value = getPath(context, uri)!!
             changeFileChoosingState(true)
-//            binding.textViewMainFragmentFileName.text =
-//                receiveFileNameFromTheFilePath(originalFilePath)
         }
     }
 
     fun handleSelectedFolderUri(selectedFolderUri: Uri?){
         if (selectedFolderUri == null) {
             changeRingtoneFolderChoosingState(false)
+            _ringtoneCuttingState.value = CuttingState.NOTCHOSEN
             return
         } else {
             val docUri = DocumentsContract.buildDocumentUriUsingTree(
@@ -67,7 +58,7 @@ class RingtoneViewModel @ViewModelInject constructor(private val context: Applic
         }
     }
 
-    fun createFileForRingtone(ringtoneFolderPathName: String, ringtoneName: String){
+    private fun createFileForRingtone(ringtoneFolderPathName: String, ringtoneName: String){
         val file = File(ringtoneFolderPathName, "$ringtoneName.mp3")
         _ringtoneUri.value = Uri.fromFile(file)
         _ringtonePath.value =  file.path
@@ -84,14 +75,14 @@ class RingtoneViewModel @ViewModelInject constructor(private val context: Applic
         }
     }
 
-    fun changeFileChoosingState(choosingState: Boolean) {
+    private fun changeFileChoosingState(choosingState: Boolean) {
         _fileChoosingState.value = choosingState
         if (isRingtoneReadyToMake()) {
             _ringtoneCuttingState.value = CuttingState.READY
         }
     }
 
-    fun changeRingtoneFolderChoosingState(choosingState: Boolean) {
+    private fun changeRingtoneFolderChoosingState(choosingState: Boolean) {
         _ringtoneFolderChoosingState.value = choosingState
         if (isRingtoneReadyToMake()) {
             _ringtoneCuttingState.value = CuttingState.READY
@@ -123,9 +114,9 @@ class RingtoneViewModel @ViewModelInject constructor(private val context: Applic
                         _ringtoneCuttingState.value = CuttingState.SUCCESSFUL
                     }
                     isTimeEmpty(startTime, endTime) -> {
-                        _ringtoneCuttingState.value = CuttingState.Error("Введите временной интервал")
+                        _ringtoneCuttingState.value = CuttingState.ERROR("Введите временной интервал")
                     }
-                    else -> _ringtoneCuttingState.value = CuttingState.Error("Неизвестная ошибка!")
+                    else -> _ringtoneCuttingState.value = CuttingState.ERROR("Неизвестная ошибка!")
                 }
             }
         }

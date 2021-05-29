@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -21,6 +22,11 @@ class FinalFragment: ViewBindingFragment<FragmentFinalBinding>(FragmentFinalBind
 
     val args: FinalFragmentArgs by navArgs()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -34,6 +40,13 @@ class FinalFragment: ViewBindingFragment<FragmentFinalBinding>(FragmentFinalBind
         }
 
         binding.textViewFinalFragmentRingtoneName.text = args.ringtoneName
+        binding.textViewFinalFragmentRingtonePath.text = args.ringtonePath
+
+        val callback = requireActivity().onBackPressedDispatcher.addCallback{
+//            BackPressedDialog().show(childFragmentManager, "backPressedDialog")
+            findNavController().navigate(R.id.action_finalFragment_to_backPressedDialog2)
+            isEnabled = true
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -57,4 +70,5 @@ class FinalFragment: ViewBindingFragment<FragmentFinalBinding>(FragmentFinalBind
         intent.data = Uri.parse("package:" + requireActivity().packageName)
         startActivity(intent)
     }
+
 }
