@@ -9,8 +9,6 @@ import androidx.navigation.fragment.navArgs
 import com.example.ringtonemaker.databinding.DialogExoplayerBinding
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.io.File
@@ -20,8 +18,6 @@ class ExoPlayerBottomDialog: BottomSheetDialogFragment() {
     private lateinit var binding: DialogExoplayerBinding
     private lateinit var simpleExoPlayer: SimpleExoPlayer
     private var playWhenReady = true
-    private var currentWindow = 0
-    private var playbackPosition: Long = 0
     private val args: ExoFragmentArgs by navArgs()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -38,8 +34,7 @@ class ExoPlayerBottomDialog: BottomSheetDialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        hideSystemUi()
-        if (Util.SDK_INT <= 23 || simpleExoPlayer == null) {
+        if (Util.SDK_INT <= 23) {
             initializePlayer()
         }
     }
@@ -60,23 +55,9 @@ class ExoPlayerBottomDialog: BottomSheetDialogFragment() {
 
 
     private fun releasePlayer() {
-        if (simpleExoPlayer != null) {
             playWhenReady = simpleExoPlayer.playWhenReady
-            playbackPosition = simpleExoPlayer.currentPosition
-            currentWindow = simpleExoPlayer.currentWindowIndex
             simpleExoPlayer.release()
-        }
     }
-
-    private fun hideSystemUi() {
-        binding.playerView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LOW_PROFILE
-                or View.SYSTEM_UI_FLAG_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
-    }
-
 
     private fun initializePlayer() {
         simpleExoPlayer = SimpleExoPlayer.Builder(requireContext())
@@ -84,17 +65,11 @@ class ExoPlayerBottomDialog: BottomSheetDialogFragment() {
         binding.playerView.player = simpleExoPlayer
         val uri = Uri.fromFile(File(args.ringtonePath))
         val mediaItem = MediaItem.fromUri(uri)
-        simpleExoPlayer.setMediaItem(mediaItem)
+        with(simpleExoPlayer){
+            setMediaItem(mediaItem)
+            prepare()
+        }
         simpleExoPlayer.playWhenReady = playWhenReady
-        simpleExoPlayer.seekTo(currentWindow, playbackPosition)
-        simpleExoPlayer.prepare()
-        val dataSourceFactory: DataSource.Factory =
-                DefaultDataSourceFactory(
-                        requireContext(), Util.getUserAgent(
-                        requireContext(),
-                        "simpleExoPlayer"
-                )
-                )
     }
 
 }

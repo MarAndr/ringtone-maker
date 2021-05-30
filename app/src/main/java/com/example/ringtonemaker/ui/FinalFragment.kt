@@ -31,9 +31,6 @@ class FinalFragment : ViewBindingFragment<FragmentFinalBinding>(FragmentFinalBin
     private lateinit var ringtonePath: String
     private lateinit var ringtoneUri: Uri
 
-
-
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         ringtoneName = args.ringtoneName
         ringtonePath = args.ringtonePath

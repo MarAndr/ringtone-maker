@@ -5,7 +5,7 @@ import android.util.Log
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 @HiltAndroidApp
-class ControlApplication: Application() {
+class App: Application() {
     override fun onCreate() {
         super.onCreate()
         if (BuildConfig.DEBUG){
