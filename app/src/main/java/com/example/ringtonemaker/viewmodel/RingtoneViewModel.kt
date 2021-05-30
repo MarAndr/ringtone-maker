@@ -13,6 +13,7 @@ import com.example.ringtonemaker.utils.getPath
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 
 
@@ -21,13 +22,13 @@ class RingtoneViewModel @ViewModelInject constructor(
     private val repository: Repository
 ) : ViewModel() {
 
-    private val _ringtoneCuttingState = MutableStateFlow<CuttingState>(CuttingState.EMPTY)
-    val ringtoneCuttingState: StateFlow<CuttingState> = _ringtoneCuttingState
+    private val _cuttingState = MutableStateFlow<CuttingState>(CuttingState.EMPTY)
+    val cuttingState: StateFlow<CuttingState> = _cuttingState
     private val _fileChoosingState = MutableLiveData(false)
-    private val _ringtoneFolderChoosingState = MutableLiveData(false)
-    private val _ringtoneNameChoosingState = MutableLiveData(false)
-    private val _ringtoneFolderPathName = MutableLiveData<String>()
-    val ringtoneFolderPathName: LiveData<String> = _ringtoneFolderPathName
+    private val _folderChoosingState = MutableLiveData(false)
+    private val _nameChoosingState = MutableLiveData(false)
+    private val _folderPathName = MutableLiveData<String>()
+    val folderPathName: LiveData<String> = _folderPathName
     private val _ringtoneName = MutableLiveData<String>()
     val ringtoneName: LiveData<String> = _ringtoneName
     private val _ringtoneUri = MutableLiveData<Uri>()
@@ -40,10 +41,11 @@ class RingtoneViewModel @ViewModelInject constructor(
     fun handleSelectFile(uri: Uri?) {
         if (uri == null) {
             changeFileChoosingState(false)
-            _ringtoneCuttingState.value = CuttingState.FILE_NOT_CHOSEN
+            _cuttingState.value = CuttingState.FILE_NOT_CHOSEN
             return
         } else {
-            _originalPath.value = getPath(context, uri)!!
+            Timber.d("uri = $uri")
+            _originalPath.value = getPath(uri)!!
             changeFileChoosingState(true)
         }
     }
@@ -51,14 +53,14 @@ class RingtoneViewModel @ViewModelInject constructor(
     fun handleSelectedFolderUri(selectedFolderUri: Uri?) {
         if (selectedFolderUri == null) {
             changeRingtoneFolderChoosingState(false)
-            _ringtoneCuttingState.value = CuttingState.FOLDER_NOT_CHOSEN
+            _cuttingState.value = CuttingState.FOLDER_NOT_CHOSEN
             return
         } else {
             val docUri = DocumentsContract.buildDocumentUriUsingTree(
                 selectedFolderUri, DocumentsContract.getTreeDocumentId(selectedFolderUri)
             )
             changeRingtoneFolderChoosingState(true)
-            _ringtoneFolderPathName.value = getPath(context, docUri)!!
+            _folderPathName.value = getPath(docUri)!!
         }
     }
 
@@ -73,23 +75,23 @@ class RingtoneViewModel @ViewModelInject constructor(
     }
 
     fun changeRingtoneNameChoosingState(ringtoneNameChoosingState: Boolean) {
-        _ringtoneNameChoosingState.value = ringtoneNameChoosingState
+        _nameChoosingState.value = ringtoneNameChoosingState
         if (isRingtoneReadyToMake()) {
-            _ringtoneCuttingState.value = CuttingState.READY
+            _cuttingState.value = CuttingState.READY
         }
     }
 
     private fun changeFileChoosingState(choosingState: Boolean) {
         _fileChoosingState.value = choosingState
         if (isRingtoneReadyToMake()) {
-            _ringtoneCuttingState.value = CuttingState.READY
+            _cuttingState.value = CuttingState.READY
         }
     }
 
     private fun changeRingtoneFolderChoosingState(choosingState: Boolean) {
-        _ringtoneFolderChoosingState.value = choosingState
+        _folderChoosingState.value = choosingState
         if (isRingtoneReadyToMake()) {
-            _ringtoneCuttingState.value = CuttingState.READY
+            _cuttingState.value = CuttingState.READY
         }
     }
 
@@ -100,10 +102,10 @@ class RingtoneViewModel @ViewModelInject constructor(
         endTimeSeconds: String
     ) {
         createFileForRingtone(
-            _ringtoneFolderPathName.value.orEmpty(),
+            _folderPathName.value.orEmpty(),
             _ringtoneName.value.orEmpty()
         )
-        _ringtoneCuttingState.value = CuttingState.LOADING
+        _cuttingState.value = CuttingState.LOADING
 
         val cmd = arrayOf(
             "-i",
@@ -114,7 +116,6 @@ class RingtoneViewModel @ViewModelInject constructor(
             "00:$endTimeMinutes:$endTimeSeconds",
             "-c",
             "copy",
-            "-copyts",
             _ringtonePath.value.orEmpty()
         )
 
@@ -122,13 +123,13 @@ class RingtoneViewModel @ViewModelInject constructor(
             repository.execFFMpegBinary(cmd) { isCuttingSuccessful ->
                 when {
                     isCuttingSuccessful -> {
-                        _ringtoneCuttingState.value = CuttingState.SUCCESSFUL
+                        _cuttingState.value = CuttingState.SUCCESSFUL
                     }
                     isTimeEmpty(startTimeMinutes, startTimeSeconds, endTimeMinutes, endTimeSeconds) -> {
-                        _ringtoneCuttingState.value =
+                        _cuttingState.value =
                             CuttingState.ERROR(context.getString(R.string.enterTimeIntervalError))
                     }
-                    else -> _ringtoneCuttingState.value = CuttingState.ERROR(context.getString(R.string.unknowError))
+                    else -> _cuttingState.value = CuttingState.ERROR(context.getString(R.string.unknowError))
                 }
             }
         }
@@ -143,7 +144,7 @@ class RingtoneViewModel @ViewModelInject constructor(
             && endTimeMinutes.toInt() == 0 && endTimeSeconds.toInt() == 0
 
     private fun isRingtoneReadyToMake() = _fileChoosingState.value == true
-            && _ringtoneFolderChoosingState.value == true
-            && _ringtoneNameChoosingState.value == true
+            && _folderChoosingState.value == true
+            && _nameChoosingState.value == true
 
 }

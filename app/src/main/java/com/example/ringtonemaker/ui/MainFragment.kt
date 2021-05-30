@@ -83,27 +83,13 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
             }
         }
 
-        if (ContextCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+        if (!isPermissionReadStorageGranted()) {
             ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                ), Constants.READ_WRITE_PERMISSION_REQUEST_CODE
+                requireActivity(), getPermissionsArray(), Constants.READ_WRITE_PERMISSION_REQUEST_CODE
             )
-        } else if (ContextCompat.checkSelfPermission(
-                requireActivity(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+        } else if (!isPermissionWriteStorageGranted()) {
             ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                ), Constants.READ_WRITE_PERMISSION_REQUEST_CODE
+                requireActivity(), getPermissionsArray(), Constants.READ_WRITE_PERMISSION_REQUEST_CODE
             )
         }
         binding.buttonMainFragmentChooseFile.setOnClickListener {
@@ -133,7 +119,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
 
     private fun observeData() {
         lifecycleScope.launch {
-            viewModel.ringtoneCuttingState.collect { cuttingState ->
+            viewModel.cuttingState.collect { cuttingState ->
                 when (cuttingState) {
                     is CuttingState.LOADING -> {
                         isLoading(true)
@@ -168,7 +154,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
 
         }
 
-        viewModel.ringtoneFolderPathName.observe(viewLifecycleOwner) { ringtoneFolderPathName ->
+        viewModel.folderPathName.observe(viewLifecycleOwner) { ringtoneFolderPathName ->
             binding.textViewMainFragmentChoosedFolder.text = ringtoneFolderPathName
         }
         viewModel.originalPath.observe(viewLifecycleOwner) { originalFilePath ->
@@ -219,6 +205,23 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
                 viewModel.handleSelectedFolderUri(selectedRingtoneFolderUri)
             }
     }
+
+    private fun getPermissionsArray() = arrayOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
+
+    private fun isPermissionReadStorageGranted(): Boolean = ContextCompat.checkSelfPermission(
+        requireActivity(),
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    ) == PackageManager.PERMISSION_GRANTED
+
+
+    private fun isPermissionWriteStorageGranted(): Boolean = ContextCompat.checkSelfPermission(
+        requireActivity(),
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    ) == PackageManager.PERMISSION_GRANTED
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

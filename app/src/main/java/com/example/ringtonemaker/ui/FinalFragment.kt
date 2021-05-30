@@ -55,10 +55,11 @@ class FinalFragment : ViewBindingFragment<FragmentFinalBinding>(FragmentFinalBin
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == Constants.CODE_WRITE_SETTINGS_PERMISSION && Settings.System.canWrite(requireContext())){
+        if (requestCode == Constants.CODE_WRITE_SETTINGS_PERMISSION && Settings.System.canWrite(
+                requireContext())) {
             setActualDefaultRingtone(requireContext(), ringtoneUri)
         }
     }
@@ -69,26 +70,9 @@ class FinalFragment : ViewBindingFragment<FragmentFinalBinding>(FragmentFinalBin
         context.startActivityForResult(intent, Constants.CODE_WRITE_SETTINGS_PERMISSION)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == Constants.CODE_WRITE_SETTINGS_PERMISSION && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            setActualDefaultRingtone(requireContext(), ringtoneUri)
-        }
-    }
-
     private fun setRingtone(context: Activity, ringtoneUri: Uri) {
-        val permission: Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Settings.System.canWrite(context)
-        } else {
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.WRITE_SETTINGS
-            ) == PackageManager.PERMISSION_GRANTED
-        }
+        val permission: Boolean = Settings.System.canWrite(context)
+
         if (permission) {
             try {
                 setActualDefaultRingtone(requireContext(), ringtoneUri)
@@ -97,24 +81,15 @@ class FinalFragment : ViewBindingFragment<FragmentFinalBinding>(FragmentFinalBin
                 createSnackBar(getString(R.string.ringtoneSetAsMelodyError))
             }
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                openAndroidPermissionsMenu(context)
-            } else {
-                ActivityCompat.requestPermissions(
-                    context,
-                    arrayOf(Manifest.permission.WRITE_SETTINGS),
-                    Constants.CODE_WRITE_SETTINGS_PERMISSION
-                )
-            }
+            openAndroidPermissionsMenu(context)
         }
     }
 
-    private fun setActualDefaultRingtone(context: Context, ringtoneUri: Uri){
+    private fun setActualDefaultRingtone(context: Context, ringtoneUri: Uri) {
         RingtoneManager.setActualDefaultRingtoneUri(
             context,
             RingtoneManager.TYPE_RINGTONE,
             ringtoneUri
         )
     }
-
 }
