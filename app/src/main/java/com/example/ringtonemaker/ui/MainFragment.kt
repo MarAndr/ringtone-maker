@@ -16,6 +16,7 @@ import com.example.ringtonemaker.AudioPicker
 import com.example.ringtonemaker.FolderPicker
 import com.example.ringtonemaker.R
 import com.example.ringtonemaker.ViewBindingFragment
+import com.example.ringtonemaker.const.Constants
 import com.example.ringtonemaker.databinding.FragmentMainBinding
 import com.example.ringtonemaker.state.CuttingState
 import com.example.ringtonemaker.utils.createSnackBar
@@ -26,7 +27,6 @@ import com.example.ringtonemaker.viewmodel.RingtoneViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBinding::inflate) {
@@ -52,49 +52,58 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.scrollChoiceStartSeconds.addItems(generateTimeList(),0)
-        binding.scrollChoiceStartMinutes.addItems(generateTimeList(),0)
-        binding.scrollChoiceStartSeconds.visibleItemCount = 2
-        binding.scrollChoiceStartMinutes.visibleItemCount = 2
-        binding.scrollChoiceStartSeconds.setOnItemSelectedListener { scrollChoice, position, name ->
-            startTimeSeconds = name
-        }
-        binding.scrollChoiceStartMinutes.setOnItemSelectedListener { scrollChoice, position, name ->
-            startTimeMinutes = name
-        }
-
-        binding.scrollChoiceEndSeconds.addItems(generateTimeList(),0)
-        binding.scrollChoiceEndMinutes.addItems(generateTimeList(),0)
-        binding.scrollChoiceEndSeconds.visibleItemCount = 2
-        binding.scrollChoiceEndMinutes.visibleItemCount = 2
-        binding.scrollChoiceEndSeconds.setOnItemSelectedListener { scrollChoice, position, name ->
-            endTimeSeconds = name
-        }
-        binding.scrollChoiceEndMinutes.setOnItemSelectedListener { scrollChoice, position, name ->
-            endTimeMinutes = name
+        binding.apply {
+            scrollChoiceStartSeconds.apply {
+                addItems(generateTimeList(), Constants.DEFAULT_INDEX)
+                visibleItemCount = Constants.VISIBLE_ITEM_COUNT
+                setOnItemSelectedListener { _, _, name ->
+                    startTimeSeconds = name
+                }
+            }
+            scrollChoiceStartMinutes.apply {
+                addItems(generateTimeList(), Constants.DEFAULT_INDEX)
+                visibleItemCount = Constants.VISIBLE_ITEM_COUNT
+                setOnItemSelectedListener { _, _, name ->
+                    startTimeMinutes = name
+                }
+            }
+            scrollChoiceEndSeconds.apply {
+                addItems(generateTimeList(), Constants.DEFAULT_INDEX)
+                visibleItemCount = Constants.VISIBLE_ITEM_COUNT
+                setOnItemSelectedListener { _, _, name ->
+                    endTimeSeconds = name
+                }
+            }
+            scrollChoiceEndMinutes.apply {
+                addItems(generateTimeList(), Constants.DEFAULT_INDEX)
+                visibleItemCount = Constants.VISIBLE_ITEM_COUNT
+                setOnItemSelectedListener { _, _, name ->
+                    endTimeMinutes = name
+                }
+            }
         }
 
         if (ContextCompat.checkSelfPermission(
-                        requireActivity(),
-                        Manifest.permission.READ_EXTERNAL_STORAGE
-                ) != PackageManager.PERMISSION_GRANTED
+                requireActivity(),
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-                    requireActivity(), arrayOf(
+                requireActivity(), arrayOf(
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            ), 2222
+                ), Constants.READ_WRITE_PERMISSION_REQUEST_CODE
             )
         } else if (ContextCompat.checkSelfPermission(
-                        requireActivity(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ) != PackageManager.PERMISSION_GRANTED
+                requireActivity(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-                    requireActivity(), arrayOf(
+                requireActivity(), arrayOf(
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            ), 2222
+                ), Constants.READ_WRITE_PERMISSION_REQUEST_CODE
             )
         }
         binding.buttonMainFragmentChooseFile.setOnClickListener {
@@ -132,12 +141,12 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
                     is CuttingState.SUCCESSFUL -> {
                         isLoading(false)
                         val action = MainFragmentDirections.actionMainFragmentToFinalFragment(
-                                ringtoneUri,
-                                ringtoneName,
-                                ringtonePath
+                            ringtoneUri,
+                            ringtoneName,
+                            ringtonePath
                         )
                         findNavController().navigate(action)
-                        createSnackBar("рингтон успешно создан")
+                        createSnackBar(getString(R.string.ringtoneMakingSuccess))
                     }
                     is CuttingState.ERROR -> {
                         isLoading(false)
@@ -146,9 +155,13 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
                     is CuttingState.READY -> {
                         isCuttingRingtoneButtonEnable(true)
                     }
-                    is CuttingState.NOTCHOSEN -> {
-                        createSnackBar("Файл или папка не выбраны!")
+                    is CuttingState.FILE_NOT_CHOSEN -> {
+                        createSnackBar(getString(R.string.fileNotChosen))
                     }
+                    is CuttingState.FOLDER_NOT_CHOSEN -> {
+                        createSnackBar(getString(R.string.folderNotChosen))
+                    }
+
                     else -> Unit
                 }
             }
@@ -160,7 +173,7 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
         }
         viewModel.originalPath.observe(viewLifecycleOwner) { originalFilePath ->
             binding.textViewMainFragmentFileName.text =
-                    receiveFileNameFromTheFilePath(originalFilePath)
+                receiveFileNameFromTheFilePath(originalFilePath)
         }
         viewModel.ringtoneUri.observe(viewLifecycleOwner) { ringtoneUri ->
             this.ringtoneUri = ringtoneUri
@@ -182,13 +195,15 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
         binding.buttonMainFragmentCreateRingtone.isEnabled = isEnable
 
         if (isEnable) {
-            binding.scrollChoiceStartMinutes.selectedItemTextColor = R.color.red_500
-            binding.scrollChoiceStartMinutes.selectedItemTextColor = R.color.red_500
-            binding.scrollChoiceStartSeconds.selectedItemTextColor = R.color.red_500
-            binding.scrollChoiceEndMinutes.selectedItemTextColor = R.color.red_500
-            binding.scrollChoiceEndSeconds.selectedItemTextColor = R.color.red_500
-            binding.textViewMainFragmentChooseTimeLabel.setTextColor(Color.BLACK)
-            binding.textViewMainFragmentChooseTimeLabel.setText(R.string.chooseTimeHeaderActive)
+            binding.apply {
+                scrollChoiceStartSeconds.selectedItemTextColor = R.color.red_500
+                scrollChoiceStartMinutes.selectedItemTextColor = R.color.red_500
+                scrollChoiceStartMinutes.selectedItemTextColor = R.color.red_500
+                scrollChoiceEndMinutes.selectedItemTextColor = R.color.red_500
+                scrollChoiceEndSeconds.selectedItemTextColor = R.color.red_500
+                textViewMainFragmentChooseTimeLabel.setTextColor(Color.BLACK)
+                textViewMainFragmentChooseTimeLabel.setText(R.string.chooseTimeHeaderActive)
+            }
         }
     }
 
@@ -200,18 +215,18 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
 
     private fun initFolderPicker() {
         folderPicker =
-                FolderPicker(requireActivity().activityResultRegistry) { selectedRingtoneFolderUri ->
-                    viewModel.handleSelectedFolderUri(selectedRingtoneFolderUri)
-                }
+            FolderPicker(requireActivity().activityResultRegistry) { selectedRingtoneFolderUri ->
+                viewModel.handleSelectedFolderUri(selectedRingtoneFolderUri)
+            }
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 2222) {
+        if (requestCode == Constants.READ_WRITE_PERMISSION_REQUEST_CODE) {
             folderPicker.chooseFolder()
         }
     }

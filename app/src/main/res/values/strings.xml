@@ -3,4 +3,14 @@
     <string name="chooseTimeHeaderActive">Выберите временной интервал:</string>
     <string name="chooseTimeHeaderInactive">Введите информацию вверху экрана</string>
     <string name="finalHeader">Рингтон успешно создан!</string>
+    <string name="ringtoneMakingSuccess">Рингтон успешно создан!</string>
+    <string name="fileNotChosen">Файл не выбран!</string>
+    <string name="folderNotChosen">Папка не выбрана!</string>
+    <string name="backPressedDialogQuestion">Вы хотите выйти из приложения или создать ещё один рингтон?</string>
+    <string name="backDialogPositiveButtonText">Выйти</string>
+    <string name="backDialogNegativeButtonText">Создать</string>
+    <string name="enterTimeIntervalError">Введите временной интервал</string>
+    <string name="unknowError">Неизвестная ошибка!</string>
+    <string name="ringtoneSettedAsPhoneMelody">Рингтон установлен в качестве мелодии по умолчанию</string>
+    <string name="ringtoneSetAsMelodyError">Ошибка установки рингтона. Необходимо ваше разрешение.</string>
 </resources>

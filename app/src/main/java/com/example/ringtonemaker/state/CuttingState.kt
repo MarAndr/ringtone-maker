@@ -6,5 +6,6 @@ sealed class CuttingState {
     object READY: CuttingState()
     class ERROR(val message: String): CuttingState()
     object EMPTY: CuttingState()
-    object NOTCHOSEN: CuttingState()
+    object FILE_NOT_CHOSEN: CuttingState()
+    object FOLDER_NOT_CHOSEN: CuttingState()
 }

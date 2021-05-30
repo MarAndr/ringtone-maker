@@ -16,43 +16,36 @@ import com.example.ringtonemaker.R
 import com.example.ringtonemaker.ViewBindingFragment
 import com.example.ringtonemaker.databinding.FragmentFinalBinding
 import com.example.ringtonemaker.utils.createSnackBar
-import timber.log.Timber
 
 class FinalFragment: ViewBindingFragment<FragmentFinalBinding>(FragmentFinalBinding::inflate) {
 
     private val args: FinalFragmentArgs by navArgs()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.buttonFinalFragmentPlayRingtone.setOnClickListener {
-//            val action = FinalFragmentDirections.actionFinalFragmentToExoFragment(args.ringtoneUri.path!!)
             val action = FinalFragmentDirections.actionFinalFragmentToExoPlayerBottomDialog(args.ringtonePath)
             findNavController().navigate(action)
         }
 
         binding.buttonFinalFragmentSetAsACallMelody.setOnClickListener {
-            setRingtone2(args.ringtoneUri)
+            setRingtone(args.ringtoneUri)
         }
 
         binding.textViewFinalFragmentRingtoneName.text = args.ringtoneName
         binding.textViewFinalFragmentRingtonePath.text = args.ringtonePath
 
-        val callback = requireActivity().onBackPressedDispatcher.addCallback{
+        requireActivity().onBackPressedDispatcher.addCallback{
             findNavController().navigate(R.id.action_finalFragment_to_backPressedDialog2)
             isEnabled = true
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    fun setRingtone2(uri: Uri?){
+    fun setRingtone(uri: Uri?){
         if (Settings.System.canWrite(requireContext())){
-            createSnackBar("Рингтон установлен в качестве мелодии по умолчанию")
+            createSnackBar(getString(R.string.ringtoneSettedAsPhoneMelody))
             RingtoneManager.setActualDefaultRingtoneUri(
                 requireContext(),
                 RingtoneManager.TYPE_RINGTONE,
@@ -60,7 +53,7 @@ class FinalFragment: ViewBindingFragment<FragmentFinalBinding>(FragmentFinalBind
             )
         } else {
             openAndroidPermissionsMenu()
-            createSnackBar("Ошибка установки рингтона. Необходимо ваше разрешение.")
+            createSnackBar(getString(R.string.ringtoneSetAsMelodyError))
         }
     }
 

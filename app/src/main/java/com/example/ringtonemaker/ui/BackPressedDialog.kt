@@ -10,11 +10,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 class BackPressedDialog: DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Вы хотите выйти из приложения или создать ещё один рингтон?")
-                .setPositiveButton("Выйти"){_,_->
+                .setMessage(getString(R.string.backPressedDialogQuestion))
+                .setPositiveButton(getString(R.string.backDialogPositiveButtonText)){ _, _->
                     requireActivity().finish()
                 }
-                .setNegativeButton("Создать"){_,_->
+                .setNegativeButton(getString(R.string.backDialogNegativeButtonText)){ _, _->
                     findNavController().navigate(R.id.action_backPressedDialog_to_mainFragment)
                 }
                 .create()

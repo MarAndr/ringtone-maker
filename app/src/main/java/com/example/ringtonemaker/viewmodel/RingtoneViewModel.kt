@@ -6,6 +6,7 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import com.example.ringtonemaker.R
 import com.example.ringtonemaker.repository.Repository
 import com.example.ringtonemaker.state.CuttingState
 import com.example.ringtonemaker.utils.getPath
@@ -39,7 +40,7 @@ class RingtoneViewModel @ViewModelInject constructor(
     fun handleSelectFile(uri: Uri?) {
         if (uri == null) {
             changeFileChoosingState(false)
-            _ringtoneCuttingState.value = CuttingState.NOTCHOSEN
+            _ringtoneCuttingState.value = CuttingState.FILE_NOT_CHOSEN
             return
         } else {
             _originalPath.value = getPath(context, uri)!!
@@ -50,7 +51,7 @@ class RingtoneViewModel @ViewModelInject constructor(
     fun handleSelectedFolderUri(selectedFolderUri: Uri?) {
         if (selectedFolderUri == null) {
             changeRingtoneFolderChoosingState(false)
-            _ringtoneCuttingState.value = CuttingState.NOTCHOSEN
+            _ringtoneCuttingState.value = CuttingState.FOLDER_NOT_CHOSEN
             return
         } else {
             val docUri = DocumentsContract.buildDocumentUriUsingTree(
@@ -104,10 +105,6 @@ class RingtoneViewModel @ViewModelInject constructor(
         )
         _ringtoneCuttingState.value = CuttingState.LOADING
 
-//    "fade=in:st=0:d=5",
-//    "fade=in:5:8",
-
-
         val cmd = arrayOf(
             "-i",
             _originalPath.value.orEmpty(),
@@ -129,9 +126,9 @@ class RingtoneViewModel @ViewModelInject constructor(
                     }
                     isTimeEmpty(startTimeMinutes, startTimeSeconds, endTimeMinutes, endTimeSeconds) -> {
                         _ringtoneCuttingState.value =
-                            CuttingState.ERROR("Введите временной интервал")
+                            CuttingState.ERROR(context.getString(R.string.enterTimeIntervalError))
                     }
-                    else -> _ringtoneCuttingState.value = CuttingState.ERROR("Неизвестная ошибка!")
+                    else -> _ringtoneCuttingState.value = CuttingState.ERROR(context.getString(R.string.unknowError))
                 }
             }
         }

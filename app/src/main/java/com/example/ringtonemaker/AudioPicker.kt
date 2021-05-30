@@ -14,7 +14,7 @@ class AudioPicker(
         REGISTRY_KEY, ActivityResultContracts.GetContent(), callback)
 
     fun pickAudio(){
-        getContent.launch(Constants.MIMETYPE_MUSIC)
+        getContent.launch(Constants.MIME_TYPE_MUSIC)
     }
 
 
