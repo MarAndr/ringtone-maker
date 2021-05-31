@@ -35,11 +35,11 @@
 
 
         <TextView
-            android:layout_gravity="center_vertical"
-            style="@style/DirectoryLabelTextStyle"
             android:id="@+id/textView_mainFragment_fileName"
+            style="@style/DirectoryLabelTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="файл не выбран" />
     </LinearLayout>
 
@@ -58,11 +58,11 @@
             android:text="выбрать папку" />
 
         <TextView
-            android:layout_gravity="center_vertical"
             android:id="@+id/textView_mainFragment_choosedFolder"
+            style="@style/DirectoryLabelTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/DirectoryLabelTextStyle"
+            android:layout_gravity="center_vertical"
             android:text="папка не выбрана" />
     </LinearLayout>
 
@@ -70,26 +70,25 @@
         android:id="@+id/linearLayout_mainFragment_setRingtoneName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@id/textView_mainFragment_chooseTimeLabel"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout_mainFragment_chooseFolder"
-        android:orientation="horizontal">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout_mainFragment_chooseFolder">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout_mainFragment_setRingtoneName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_mainFragment_setRingtoneName"
-                android:textColorHint="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="введите название рингтона" />
+                android:hint="введите название рингтона"
+                android:textColorHint="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
     </LinearLayout>
-
-
 
 
     <TextView
@@ -97,9 +96,9 @@
         style="@style/TextLabelStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/red_500"
-        android:text="@string/chooseTimeHeaderInactive"
         android:gravity="center_horizontal"
+        android:text="@string/chooseTimeHeaderInactive"
+        android:textColor="@color/red_500"
         app:layout_constraintBottom_toTopOf="@id/linearLayout_mainFragment_chooseTimeInterval"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -117,21 +116,23 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="40dp"
                 android:layout_toLeftOf="@id/label_seconds"
-                android:textSize="18sp"
                 android:text="Минуты"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textSize="18sp" />
+
             <TextView
-                android:layout_marginEnd="20dp"
                 android:id="@+id/label_seconds"
-                android:layout_alignParentEnd="true"
-                android:textSize="18sp"
-                android:text="Секунды"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
+                android:text="Секунды"
+                android:textSize="18sp" />
         </RelativeLayout>
 
         <LinearLayout
@@ -145,12 +146,12 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_fragmentStartOption_weightHeader">
 
             <TextView
-                android:layout_gravity="center_vertical"
-                android:text="Начало:"
-                android:layout_marginEnd="16dp"
-                android:textSize="20sp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="16dp"
+                android:text="Начало:"
+                android:textSize="20sp" />
 
             <com.webianks.library.scroll_choice.ScrollChoice
                 android:id="@+id/scroll_choice_startMinutes"
@@ -181,7 +182,6 @@
         </LinearLayout>
 
 
-
         <LinearLayout
             android:id="@+id/linearLayout_endTime_scroll"
             android:layout_width="match_parent"
@@ -193,12 +193,12 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_fragmentStartOption_weightHeader">
 
             <TextView
-                android:layout_marginEnd="27dp"
-                android:textSize="20sp"
-                android:layout_gravity="center_vertical"
-                android:text="Конец:"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="27dp"
+                android:text="Конец:"
+                android:textSize="20sp" />
 
             <com.webianks.library.scroll_choice.ScrollChoice
                 android:id="@+id/scroll_choice_endMinutes"
@@ -232,8 +232,8 @@
     </LinearLayout>
 
     <Button
-        style="@style/MakeRingtoneButtonStyle"
         android:id="@+id/button_mainFragment_createRingtone"
+        style="@style/MakeRingtoneButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:enabled="false"

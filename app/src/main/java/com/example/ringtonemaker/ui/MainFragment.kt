@@ -27,6 +27,8 @@ import com.example.ringtonemaker.viewmodel.RingtoneViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.io.File
 
 @AndroidEntryPoint
 class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBinding::inflate) {
@@ -182,11 +184,11 @@ class MainFragment : ViewBindingFragment<FragmentMainBinding>(FragmentMainBindin
 
         if (isEnable) {
             binding.apply {
-                scrollChoiceStartSeconds.selectedItemTextColor = R.color.red_500
-                scrollChoiceStartMinutes.selectedItemTextColor = R.color.red_500
-                scrollChoiceStartMinutes.selectedItemTextColor = R.color.red_500
-                scrollChoiceEndMinutes.selectedItemTextColor = R.color.red_500
-                scrollChoiceEndSeconds.selectedItemTextColor = R.color.red_500
+                scrollChoiceStartSeconds.selectedItemTextColor = R.color.purple_700
+                scrollChoiceStartMinutes.selectedItemTextColor = R.color.purple_700
+                scrollChoiceStartMinutes.selectedItemTextColor = R.color.purple_700
+                scrollChoiceEndMinutes.selectedItemTextColor = R.color.purple_700
+                scrollChoiceEndSeconds.selectedItemTextColor = R.color.purple_700
                 textViewMainFragmentChooseTimeLabel.setTextColor(Color.BLACK)
                 textViewMainFragmentChooseTimeLabel.setText(R.string.chooseTimeHeaderActive)
             }

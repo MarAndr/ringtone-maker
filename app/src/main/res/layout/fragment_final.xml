@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="16dp"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
     <TextView
-        style="@style/TextLabelStyle"
         android:id="@+id/textView_finalFragment_header"
+        style="@style/TextLabelStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/finalHeader"
@@ -18,54 +18,54 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/textView_finalFragment_header"
-        app:layout_constraintBottom_toTopOf="@id/button_finalFragment_playRingtone"
         android:id="@+id/linearLayout_finalFragment_ringtoneInfo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/button_finalFragment_playRingtone"
+        app:layout_constraintTop_toBottomOf="@+id/textView_finalFragment_header">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textColor="@color/black"
                 android:text="Название:"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textColor="@color/black" />
 
             <TextView
-                android:layout_gravity="center_vertical"
-                style="@style/DirectoryLabelTextStyle"
                 android:id="@+id/textView_finalFragment_ringtoneName"
-                tools:text="ringtone_name.mp3"
+                style="@style/DirectoryLabelTextStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                tools:text="ringtone_name.mp3" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textColor="@color/black"
                 android:text="Расположение:"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textColor="@color/black" />
 
             <TextView
-                android:layout_gravity="center_vertical"
-                style="@style/DirectoryLabelTextStyle"
                 android:id="@+id/textView_finalFragment_ringtonePath"
-                tools:text="ringtone_name.mp3"
+                style="@style/DirectoryLabelTextStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                tools:text="ringtone_name.mp3" />
 
         </LinearLayout>
 
@@ -76,11 +76,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Прослушать"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout_finalFragment_ringtoneInfo"
         app:layout_constraintBottom_toTopOf="@id/button_finalFragment_setAsACallMelody"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-         />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout_finalFragment_ringtoneInfo" />
 
     <Button
         android:id="@+id/button_finalFragment_setAsACallMelody"
@@ -91,6 +90,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_finalFragment_playRingtone" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

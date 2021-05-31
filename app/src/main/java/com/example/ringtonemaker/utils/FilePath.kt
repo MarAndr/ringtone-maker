@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import java.io.File
 
 fun getPath(uri: Uri): String? {
     val docId = DocumentsContract.getDocumentId(uri)
@@ -23,3 +24,10 @@ fun getPath(uri: Uri): String? {
 fun receiveFileNameFromTheFilePath(filePath: String): String {
     return filePath.substringAfterLast("/")
 }
+
+//fun createFileForRingtone(ringtoneFolderPathName: String, ringtoneName: String): File {
+//    val file = File(ringtoneFolderPathName, "$ringtoneName.mp3")
+//    _ringtoneUri.value = Uri.fromFile(file)
+//    _ringtonePath.value = file.path
+//    return file
+//}

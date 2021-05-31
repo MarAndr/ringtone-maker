@@ -7,3 +7,10 @@ fun generateTimeList(): MutableList<String>{
     }
     return list
 }
+
+fun extractSeconds(fullTime: String): Int{
+    val minutesAndSeconds = fullTime.substringAfter(':')
+    val minutes = minutesAndSeconds.substringBefore(':')
+    val seconds = minutesAndSeconds.substringAfter(':')
+    return (minutes.toInt())*60 + seconds.toInt()
+}

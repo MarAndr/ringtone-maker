@@ -6,20 +6,18 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import com.example.ringtonemaker.AudioTrimmer
 import com.example.ringtonemaker.R
-import com.example.ringtonemaker.repository.Repository
 import com.example.ringtonemaker.state.CuttingState
 import com.example.ringtonemaker.utils.getPath
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 
 
 class RingtoneViewModel @ViewModelInject constructor(
-    private val context: Application,
-    private val repository: Repository
+        private val context: Application,
 ) : ViewModel() {
 
     private val _cuttingState = MutableStateFlow<CuttingState>(CuttingState.EMPTY)
@@ -37,6 +35,7 @@ class RingtoneViewModel @ViewModelInject constructor(
     val ringtonePath: LiveData<String> = _ringtonePath
     private val _originalPath = MutableLiveData<String>()
     val originalPath: LiveData<String> = _originalPath
+
 
     fun handleSelectFile(uri: Uri?) {
         if (uri == null) {
@@ -57,7 +56,7 @@ class RingtoneViewModel @ViewModelInject constructor(
             return
         } else {
             val docUri = DocumentsContract.buildDocumentUriUsingTree(
-                selectedFolderUri, DocumentsContract.getTreeDocumentId(selectedFolderUri)
+                    selectedFolderUri, DocumentsContract.getTreeDocumentId(selectedFolderUri)
             )
             changeRingtoneFolderChoosingState(true)
             _folderPathName.value = getPath(docUri)!!
@@ -96,50 +95,42 @@ class RingtoneViewModel @ViewModelInject constructor(
     }
 
     fun trimAudio(
-        startTimeMinutes: String,
-        startTimeSeconds: String,
-        endTimeMinutes: String,
-        endTimeSeconds: String
+            startTimeMinutes: String,
+            startTimeSeconds: String,
+            endTimeMinutes: String,
+            endTimeSeconds: String
     ) {
         createFileForRingtone(
-            _folderPathName.value.orEmpty(),
-            _ringtoneName.value.orEmpty()
+                _folderPathName.value.orEmpty(),
+                _ringtoneName.value.orEmpty()
         )
+
         _cuttingState.value = CuttingState.LOADING
 
-        val cmd = arrayOf(
-            "-i",
-            _originalPath.value.orEmpty(),
-            "-ss",
-            "00:$startTimeMinutes:$startTimeSeconds",
-            "-to",
-            "00:$endTimeMinutes:$endTimeSeconds",
-            "-c",
-            "copy",
-            _ringtonePath.value.orEmpty()
-        )
-
-        viewModelScope.launch {
-            repository.execFFMpegBinary(cmd) { isCuttingSuccessful ->
-                when {
-                    isCuttingSuccessful -> {
-                        _cuttingState.value = CuttingState.SUCCESSFUL
+        AudioTrimmer.with()
+                .setFile(_originalPath.value.orEmpty())
+                .setStartTime(startTimeMinutes, startTimeSeconds)
+                .setEndTime(endTimeMinutes, endTimeSeconds)
+                .setRingtonePath(_ringtonePath.value.orEmpty())
+                .trim { isCuttingSuccessful ->
+                    when {
+                        isCuttingSuccessful -> {
+                            _cuttingState.value = CuttingState.SUCCESSFUL
+                        }
+                        isTimeEmpty(startTimeMinutes, startTimeSeconds, endTimeMinutes, endTimeSeconds) -> {
+                            _cuttingState.value =
+                                    CuttingState.ERROR(context.getString(R.string.enterTimeIntervalError))
+                        }
+                        else -> _cuttingState.value = CuttingState.ERROR(context.getString(R.string.unknowError))
                     }
-                    isTimeEmpty(startTimeMinutes, startTimeSeconds, endTimeMinutes, endTimeSeconds) -> {
-                        _cuttingState.value =
-                            CuttingState.ERROR(context.getString(R.string.enterTimeIntervalError))
-                    }
-                    else -> _cuttingState.value = CuttingState.ERROR(context.getString(R.string.unknowError))
                 }
-            }
-        }
     }
 
     private fun isTimeEmpty(
-        startTimeMinutes: String,
-        startTimeSeconds: String,
-        endTimeMinutes: String,
-        endTimeSeconds: String
+            startTimeMinutes: String,
+            startTimeSeconds: String,
+            endTimeMinutes: String,
+            endTimeSeconds: String
     ) = startTimeMinutes.toInt() == 0 && startTimeSeconds.toInt() == 0
             && endTimeMinutes.toInt() == 0 && endTimeSeconds.toInt() == 0
 
